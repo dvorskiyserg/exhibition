@@ -1,18 +1,21 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "../context/AuthContext"; // Додаємо AuthContext
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n"; // Підключаємо i18n
 import logo from "../assets/logo.png";
+import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
+  const { t } = useTranslation();
+  const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const { user, logout } = useAuth(); // Отримуємо користувача та функцію виходу
-  const navigate = useNavigate();
+  const [language, setLanguage] = useState(i18n.language);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/"); // Після виходу перенаправляємо на головну сторінку
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setLanguage(lng);
   };
 
   return (
@@ -25,52 +28,71 @@ const Header = () => {
 
         {/* Навігація для великих екранів */}
         <nav className="hidden md:flex space-x-6">
-          <Link
-            to="/"
-            className="hover:text-amber-300 transition-colors font-montserrat uppercase text-xs antialiased font-normal tracking-tight"
-          >
-            Головна
+          <Link to="/" className="hover:text-amber-300 transition-colors">
+            {t("header.home")}
           </Link>
           <Link
             to="/dashboard"
-            className="hover:text-amber-300 transition-colors font-montserrat uppercase text-xs antialiased font-normal tracking-tight"
+            className="hover:text-amber-300 transition-colors"
           >
-            Виставки
+            {t("header.exhibitions")}
           </Link>
           <Link
             to="/profile"
-            className="hover:text-amber-300 transition-colors font-montserrat uppercase text-xs antialiased font-normal tracking-tight"
+            className="hover:text-amber-300 transition-colors"
           >
-            Учасникам
+            {t("header.participants")}
           </Link>
           <Link
             to="/profile"
-            className="hover:text-amber-300 transition-colors font-montserrat uppercase text-xs antialiased font-normal tracking-tight"
+            className="hover:text-amber-300 transition-colors"
           >
-            Відвідувачам
+            {t("header.visitors")}
           </Link>
           <Link
             to="/profile"
-            className="hover:text-amber-300 transition-colors font-montserrat uppercase text-xs antialiased font-normal tracking-tight"
+            className="hover:text-amber-300 transition-colors"
           >
-            Про нас
+            {t("header.about")}
           </Link>
           {user ? (
             <button
-              onClick={handleLogout}
-              className="hover:text-amber-300 transition-colors font-montserrat uppercase text-xs antialiased font-normal tracking-tight"
+              onClick={logout}
+              className="hover:text-amber-300 transition-colors"
             >
-              Вийти
+              {t("header.logout")}
             </button>
           ) : (
             <Link
               to="/login"
-              className="hover:text-amber-300 transition-colors font-montserrat uppercase text-xs antialiased font-normal tracking-tight"
+              className="hover:text-amber-300 transition-colors"
             >
-              Увійти
+              {t("header.login")}
             </Link>
           )}
         </nav>
+
+        {/* Перемикач мов */}
+        <div className="ml-4 flex items-center space-x-2">
+          <button
+            className={`${language === "ua" ? "font-bold" : ""}`}
+            onClick={() => changeLanguage("ua")}
+          >
+            UA
+          </button>
+          <button
+            className={`${language === "en" ? "font-bold" : ""}`}
+            onClick={() => changeLanguage("en")}
+          >
+            EN
+          </button>
+          <button
+            className={`${language === "de" ? "font-bold" : ""}`}
+            onClick={() => changeLanguage("de")}
+          >
+            DE
+          </button>
+        </div>
 
         {/* Кнопка відкриття мобільного меню */}
         <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
@@ -92,45 +114,57 @@ const Header = () => {
               <li>
                 <Link
                   to="/"
-                  className="block hover:text-amber-300 transition-colors font-montserrat uppercase text-sm antialiased font-normal tracking-tight"
-                  onClick={() => setIsOpen(false)}
+                  className="block hover:text-amber-300 transition-colors"
                 >
-                  Головна
+                  {t("header.home")}
                 </Link>
               </li>
               <li>
                 <Link
                   to="/dashboard"
-                  className="block hover:text-amber-300 transition-colors font-montserrat uppercase text-sm antialiased font-normal tracking-tight"
-                  onClick={() => setIsOpen(false)}
+                  className="block hover:text-amber-300 transition-colors"
                 >
-                  Панель
+                  {t("header.exhibitions")}
                 </Link>
               </li>
               <li>
                 <Link
                   to="/profile"
-                  className="block hover:text-amber-300 transition-colors font-montserrat uppercase text-sm antialiased font-normal tracking-tight"
-                  onClick={() => setIsOpen(false)}
+                  className="block hover:text-amber-300 transition-colors"
                 >
-                  Профіль
+                  {t("header.participants")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/profile"
+                  className="block hover:text-amber-300 transition-colors"
+                >
+                  {t("header.visitors")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/profile"
+                  className="block hover:text-amber-300 transition-colors"
+                >
+                  {t("header.about")}
                 </Link>
               </li>
               <li>
                 {user ? (
                   <button
-                    onClick={handleLogout}
-                    className="block hover:text-amber-300 transition-colors font-montserrat uppercase text-sm antialiased font-black tracking-tight"
+                    onClick={logout}
+                    className="hover:text-amber-300 transition-colors"
                   >
-                    Вийти
+                    {t("header.logout")}
                   </button>
                 ) : (
                   <Link
                     to="/login"
-                    className="block hover:text-amber-300 transition-colors font-montserrat uppercase text-sm antialiased font-normal tracking-tight"
-                    onClick={() => setIsOpen(false)}
+                    className="hover:text-amber-300 transition-colors"
                   >
-                    Увійти
+                    {t("header.login")}
                   </Link>
                 )}
               </li>
