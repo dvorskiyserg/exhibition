@@ -1,21 +1,26 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useTranslation } from "react-i18next";
-import i18n from "../i18n"; // Підключаємо i18n
+import { Menu, X, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion"; // Анімація
+import { useTranslation } from "react-i18next"; // i18next
 import logo from "../assets/logo.png";
-import { useAuth } from "../context/AuthContext";
+import { MdLogin } from "react-icons/md";
+
+const languageIcons = {
+  ua: "🇺🇦",
+  en: "🇬🇧",
+  de: "🇩🇪",
+};
 
 const Header = () => {
-  const { t } = useTranslation();
-  const { user, logout } = useAuth();
+  const { i18n } = useTranslation(); // Використовуємо i18next
   const [isOpen, setIsOpen] = useState(false);
-  const [language, setLanguage] = useState(i18n.language);
+  const [langDropdown, setLangDropdown] = useState(false);
 
+  // Функція для зміни мови
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
-    setLanguage(lng);
+    setLangDropdown(false);
   };
 
   return (
@@ -26,81 +31,72 @@ const Header = () => {
           <img src={logo} alt="Логотип" className="h-7 w-auto" />
         </Link>
 
-        {/* Навігація для великих екранів */}
+        {/* Навігація */}
         <nav className="hidden md:flex space-x-6">
           <Link to="/" className="hover:text-amber-300 transition-colors">
-            {t("header.home")}
+            Головна
           </Link>
           <Link
             to="/dashboard"
             className="hover:text-amber-300 transition-colors"
           >
-            {t("header.exhibitions")}
+            Виставки
           </Link>
           <Link
             to="/profile"
             className="hover:text-amber-300 transition-colors"
           >
-            {t("header.participants")}
+            Учасникам
           </Link>
           <Link
             to="/profile"
             className="hover:text-amber-300 transition-colors"
           >
-            {t("header.visitors")}
+            Відвідувачам
           </Link>
           <Link
             to="/profile"
             className="hover:text-amber-300 transition-colors"
           >
-            {t("header.about")}
+            Про нас
           </Link>
-          {user ? (
+          <Link to="/login" className="hover:text-amber-300 transition-colors">
+            <MdLogin />
+          </Link>
+
+          {/* Випадаючий список мови */}
+          <div className="relative">
             <button
-              onClick={logout}
-              className="hover:text-amber-300 transition-colors"
+              onClick={() => setLangDropdown(!langDropdown)}
+              className="flex items-center text-xl"
             >
-              {t("header.logout")}
+              {languageIcons[i18n.language]}{" "}
+              <ChevronDown className="ml-1" size={16} />
             </button>
-          ) : (
-            <Link
-              to="/login"
-              className="hover:text-amber-300 transition-colors"
-            >
-              {t("header.login")}
-            </Link>
-          )}
+
+            {langDropdown && (
+              <div className="absolute right-0 mt-2 w-20 bg-white text-black rounded-lg shadow-md">
+                {Object.keys(languageIcons).map((lng) => (
+                  <button
+                    key={lng}
+                    onClick={() => changeLanguage(lng)}
+                    className="block px-4 py-2 text-xl w-full text-center hover:bg-gray-200"
+                  >
+                    {languageIcons[lng]}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </nav>
 
-        {/* Перемикач мов */}
-        <div className="ml-4 flex items-center space-x-2">
-          <button
-            className={`${language === "ua" ? "font-bold" : ""}`}
-            onClick={() => changeLanguage("ua")}
-          >
-            UA
-          </button>
-          <button
-            className={`${language === "en" ? "font-bold" : ""}`}
-            onClick={() => changeLanguage("en")}
-          >
-            EN
-          </button>
-          <button
-            className={`${language === "de" ? "font-bold" : ""}`}
-            onClick={() => changeLanguage("de")}
-          >
-            DE
-          </button>
-        </div>
-
-        {/* Кнопка відкриття мобільного меню */}
+        {/* Кнопка мобільного меню */}
         <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
 
-      {/* Мобільне меню з анімацією */}
+      {/* Мобільне меню */}
       <AnimatePresence>
         {isOpen && (
           <motion.nav
@@ -108,64 +104,59 @@ const Header = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden text-white p-4 absolute top-16 left-0 w-full shadow-lg mobile-menu-color"
+            className="md:hidden text-white p-4 absolute top-16 left-0 w-full bg-header shadow-lg"
           >
             <ul className="flex flex-col space-y-4">
               <li>
-                <Link
-                  to="/"
-                  className="block hover:text-amber-300 transition-colors"
-                >
-                  {t("header.home")}
+                <Link to="/" onClick={() => setIsOpen(false)}>
+                  Головна
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/dashboard"
-                  className="block hover:text-amber-300 transition-colors"
-                >
-                  {t("header.exhibitions")}
+                <Link to="/dashboard" onClick={() => setIsOpen(false)}>
+                  Виставки
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/profile"
-                  className="block hover:text-amber-300 transition-colors"
-                >
-                  {t("header.participants")}
+                <Link to="/profile" onClick={() => setIsOpen(false)}>
+                  Учасникам
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/profile"
-                  className="block hover:text-amber-300 transition-colors"
-                >
-                  {t("header.visitors")}
+                <Link to="/profile" onClick={() => setIsOpen(false)}>
+                  Відвідувачам
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/profile"
-                  className="block hover:text-amber-300 transition-colors"
-                >
-                  {t("header.about")}
+                <Link to="/profile" onClick={() => setIsOpen(false)}>
+                  Про нас
                 </Link>
               </li>
               <li>
-                {user ? (
-                  <button
-                    onClick={logout}
-                    className="hover:text-amber-300 transition-colors"
-                  >
-                    {t("header.logout")}
-                  </button>
-                ) : (
-                  <Link
-                    to="/login"
-                    className="hover:text-amber-300 transition-colors"
-                  >
-                    {t("header.login")}
-                  </Link>
+                <Link to="/login" onClick={() => setIsOpen(false)}>
+                  <MdLogin />
+                </Link>
+              </li>
+              <li className="relative">
+                <button
+                  onClick={() => setLangDropdown(!langDropdown)}
+                  className="flex items-center text-xl"
+                >
+                  {languageIcons[i18n.language]}{" "}
+                  <ChevronDown className="ml-1" size={16} />
+                </button>
+                {langDropdown && (
+                  <div className="absolute left-0 mt-2 w-20 bg-white text-black rounded-lg shadow-md">
+                    {Object.keys(languageIcons).map((lng) => (
+                      <button
+                        key={lng}
+                        onClick={() => changeLanguage(lng)}
+                        className="block px-4 py-2 text-xl w-full text-center hover:bg-gray-200"
+                      >
+                        {languageIcons[lng]}
+                      </button>
+                    ))}
+                  </div>
                 )}
               </li>
             </ul>
