@@ -16,8 +16,7 @@ import AdminPanel from "./pages/AdminPanel";
 import PrivateRoute from "./components/PrivateRoute";
 import Header from "./components/Header";
 import Home from "./pages/Home";
-import "./output.css";
-//import "./index.css";
+import "./index.css";
 
 const queryClient = new QueryClient();
 
