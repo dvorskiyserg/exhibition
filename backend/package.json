@@ -20,8 +20,9 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^15.4.1",
     "react-router-dom": "^6.0.0",
-    "styled-components": "^6.0.0",
-    "rsuite": "^5.78.0"
+    "rsuite": "^5.78.0",
+    "strapi": "^3.6.11",
+    "styled-components": "^6.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",

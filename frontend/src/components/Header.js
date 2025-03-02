@@ -7,12 +7,18 @@ import MenuIcon from "@rsuite/icons/Menu";
 import CloseIcon from "@rsuite/icons/Close";
 import logo from "../assets/logo.png";
 import { motion, AnimatePresence } from "framer-motion";
-import "../styles/index.css"; // Підключаємо CSS
+import "../styles/index.css";
 
 const languageIcons = {
   ua: "🇺🇦",
   en: "🇬🇧",
   de: "🇩🇪",
+};
+
+const languageNames = {
+  ua: "UA",
+  en: "EN",
+  de: "DE",
 };
 
 const Header = () => {
@@ -69,6 +75,7 @@ const Header = () => {
             <Nav.Item as={Link} to="/login">
               <MdLogin size={20} />
             </Nav.Item>
+            {/* Dropdown з прапорцем для десктопу */}
             <Dropdown
               placement="bottomEnd"
               renderToggle={(props, ref) => (
@@ -88,7 +95,7 @@ const Header = () => {
         )}
       </Navbar>
 
-      {/* Мобільне меню (вертикальне) */}
+      {/* Мобільне меню */}
       <AnimatePresence>
         {isMobile && isOpen && (
           <motion.div
@@ -133,27 +140,22 @@ const Header = () => {
               <Nav.Item as={Link} to="/login" onClick={() => setIsOpen(false)}>
                 <MdLogin size={20} />
               </Nav.Item>
-              <Nav.Item>
-                <Dropdown
-                  placement="bottomStart"
-                  renderToggle={(props, ref) => (
-                    <span ref={ref} {...props} className="language-toggle">
-                      {languageIcons[i18n.language] || "🌐"}
-                    </span>
-                  )}
-                  noCaret
-                >
-                  {Object.keys(languageIcons).map((lng) => (
-                    <Dropdown.Item
-                      key={lng}
-                      onClick={() => changeLanguage(lng)}
-                    >
-                      {languageIcons[lng]}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown>
-              </Nav.Item>
             </Nav>
+
+            {/* Проста текстова мова у мобільному меню */}
+            <div className="mobile-language-switcher">
+              {Object.keys(languageNames).map((lng) => (
+                <span
+                  key={lng}
+                  className={`language-link ${
+                    i18n.language === lng ? "active" : ""
+                  }`}
+                  onClick={() => changeLanguage(lng)}
+                >
+                  {languageNames[lng]}
+                </span>
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Form, Button, Panel, Message, Container } from "rsuite";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = ({ onLogin }) => {
   const [formValue, setFormValue] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     setError("");
@@ -23,6 +24,14 @@ const Login = ({ onLogin }) => {
       if (data.error) throw new Error(data.error.message);
 
       onLogin(data);
+
+      const userRole = data.user?.role?.type;
+
+      if (userRole === "admin" || userRole === "superadmin") {
+        navigate("/dashboard");
+      } else {
+        navigate("/profile");
+      }
     } catch (err) {
       setError(err.message || "Помилка входу");
     }

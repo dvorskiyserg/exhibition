@@ -1,19 +1,24 @@
 export default [
-  "strapi::logger",
-  "strapi::errors",
+  'strapi::errors',
   {
-    name: "strapi::cors",
+    name: 'strapi::security',
     config: {
-      enabled: true,
-      headers: "*",
-      origin: ["http://localhost:3000"], // або твій домен
+      contentSecurityPolicy: false,  // спрощена політика на час розробки
     },
   },
-  "strapi::security",
-  "strapi::poweredBy",
-  "strapi::query",
-  "strapi::body",
-  "strapi::session",
-  "strapi::favicon",
-  "strapi::public",
+  {
+    name: 'strapi::cors',
+    config: {
+      enabled: true,
+      origin: ['http://localhost:3000'], // Додай свій фронтенд URL сюди
+      headers: '*',
+    },
+  },
+  'strapi::poweredBy',
+  'strapi::logger',
+  'strapi::query',
+  'strapi::body',
+  'strapi::session',
+  'strapi::favicon',
+  'strapi::public',
 ];

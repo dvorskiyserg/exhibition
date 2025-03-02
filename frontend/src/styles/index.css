@@ -12,6 +12,7 @@ body {
   --primary-color: #51134c; /* Основний колір */
   --secondary-color: #ff9900; /* Вторинний колір */
   --background-color: #ffffff; /* Колір фону */
+  --background-menu-color: #6c2266; /* Колір фону */  
   --text-color: #333333; /* Колір тексту */
   --navlink-color: #f0b400; /* Колір при наведенні */
   --navlink-default: #ffffff; /* Звичайний колір тексту */
@@ -55,7 +56,7 @@ body {
   top: 60px;
   left: 0;
   width: 100%;
-  background: white;
+  background: var(  --background-menu-color) !important;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 999;
   padding: 15px 0;
@@ -79,7 +80,8 @@ body {
 /* ================= RSUITE НАВІГАЦІЯ ================= */
 
 /* Звичайний пункт меню */
-.rs-navbar-item {
+.rs-navbar-item,
+.rs-nav-item  {
   background-color: transparent !important;
   color: var(--navlink-default) !important;
   transition: color 0.3s ease;
@@ -87,12 +89,15 @@ body {
   padding: 10px 15px;
   text-transform: uppercase;
   font-size: 14px;
+  border-radius: 0 !important;
 }
 
 /* Наведення */
-.rs-navbar-item:hover {
+.rs-navbar-item:hover,
+.rs-nav-item:hover {
   background-color: transparent !important;
   color: var(--navlink-hover) !important;
+  border-radius: 0 !important;
 }
 
 /* Активний пункт меню */
@@ -197,4 +202,59 @@ body {
 
 .register-link a:hover, .login-link a:hover {
   text-decoration: underline;
+}
+/* Мобільне меню мов */
+.mobile-language-switcher {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 0px 12px;
+  color: var(--navlink-default);
+}
+
+/* .mobile-language-switcher:hover {
+  color: var(--navlink-active);
+} */
+
+.language-icon {
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.language-icon:hover {
+  transform: scale(1.2);
+}
+
+.language-icon.active {
+  border-bottom: 2px solid var(--primary-color, #51134c);
+}
+
+.language-link {
+  cursor: pointer;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.language-link.active {
+  font-weight: bold;
+  color: var(--navlink-color, #f0b400);
+}
+
+.language-link:hover {
+  color: var(--navlink-color, #f0b400);
+}
+
+/* Прапорці у десктоп версії */
+.language-switcher-desktop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 15px;
+}
+
+.rs-dropdown-open.rs-dropdown-placement-bottom-end > .rs-dropdown-menu, .rs-dropdown-open.rs-dropdown-placement-top-end > .rs-dropdown-menu {
+  right: -9px !important;
 }

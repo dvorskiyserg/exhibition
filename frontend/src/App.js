@@ -22,11 +22,20 @@ import Home from "./pages/Home";
 const queryClient = new QueryClient();
 
 function App() {
+  function handleLogin(userData) {
+    console.log("Успішний вхід:", userData);
+
+    // Збереження токену у localStorage
+    localStorage.setItem("jwt", userData.jwt);
+
+    // Тут можна оновити глобальний контекст користувача, якщо такий є
+    // наприклад: setUser(userData.user);
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
         <AuthProvider>
-          {/* Навігаційне меню */}
           <Header />
           <div className="pt-16">
             <div className="container mx-auto p-6 ">
@@ -36,7 +45,10 @@ function App() {
                   CassName="container mx-auto"
                   element={<Home />}
                 />
-                <Route path="/login" element={<Login />} />
+                <Route
+                  path="/login"
+                  element={<Login onLogin={handleLogin} />}
+                />
                 <Route path="/register" element={<Register />} />
                 <Route
                   path="/dashboard"
@@ -70,8 +82,6 @@ function App() {
                     </PrivateRoute>
                   }
                 />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
               </Routes>
             </div>
           </div>
