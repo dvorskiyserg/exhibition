@@ -7,9 +7,19 @@ body {
   background-color: #f9f9f9;
 }
 
+/* Визначення глобальних кольорів */
+:root {
+  --primary-color: #51134c; /* Основний колір */
+  --secondary-color: #ff9900; /* Вторинний колір */
+  --background-color: #ffffff; /* Колір фону */
+  --text-color: #333333; /* Колір тексту */
+  --navlink-color: #f0b400; /* Колір при наведенні */
+  --navlink-default: #ffffff; /* Звичайний колір тексту */
+}
+
 /* Загальний стиль для хедера */
 .custom-navbar {
-  background-color: #2196f3;
+  background-color: var(--primary-color) !important;
   height: 60px;
   position: fixed;
   top: 0;
@@ -63,3 +73,4 @@ body {
 .page-content {
   margin-top: 60px;
 }
+

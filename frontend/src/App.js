@@ -16,6 +16,9 @@ import AdminPanel from "./pages/AdminPanel";
 import PrivateRoute from "./components/PrivateRoute";
 import Header from "./components/Header";
 import Home from "./pages/Home";
+import "rsuite/dist/rsuite.min.css";
+import "./styles/custom-theme.less";
+
 // import { Button, Container, Header as RSHeader, Content, Footer } from "rsuite";
 
 const queryClient = new QueryClient();

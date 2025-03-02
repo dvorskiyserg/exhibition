@@ -7,7 +7,7 @@ import MenuIcon from "@rsuite/icons/Menu";
 import CloseIcon from "@rsuite/icons/Close";
 import logo from "../assets/logo.png";
 import { motion, AnimatePresence } from "framer-motion";
-import "../index.css"; // Підключаємо CSS
+import "../styles/index.css"; // Підключаємо CSS
 
 const languageIcons = {
   ua: "🇺🇦",
