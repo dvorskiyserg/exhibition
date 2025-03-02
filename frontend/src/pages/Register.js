@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Container, Panel, Form, Button, Message } from "rsuite";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const [formValue, setFormValue] = useState({});
@@ -14,7 +15,7 @@ const Register = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...formValue,
-            username: formValue.email,
+            username: formValue.email, // Strapi вимагає username
           }),
         }
       );
@@ -30,8 +31,8 @@ const Register = () => {
   };
 
   return (
-    <Container>
-      <Panel header="Реєстрація" bordered>
+    <Container className="register-container">
+      <Panel header="Реєстрація" bordered className="register-panel">
         {message && (
           <Message showIcon type="info">
             {message}
@@ -46,10 +47,17 @@ const Register = () => {
             <Form.ControlLabel>Пароль</Form.ControlLabel>
             <Form.Control name="password" type="password" />
           </Form.Group>
-          <Button appearance="primary" onClick={handleRegister}>
-            Зареєструватися
-          </Button>
+          <Form.Group>
+            <Button appearance="primary" onClick={handleRegister}>
+              Зареєструватися
+            </Button>
+          </Form.Group>
         </Form>
+        <div className="login-link">
+          <p>
+            Вже маєте обліковий запис? <Link to="/login">Увійти</Link>
+          </p>
+        </div>
       </Panel>
     </Container>
   );

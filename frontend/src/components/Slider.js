@@ -1,43 +1,31 @@
-import { useEffect, useState } from "react";
+import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import { getSlides } from "../api/strapiApi";
+import "../styles/slider.css"; // Стилі для додаткового налаштування (необов'язково)
+
+const images = [
+  "/images/slide1.jpg",
+  "/images/slide2.jpg",
+  "/images/slide3.jpg",
+];
 
 const Slider = () => {
-  const [slides, setSlides] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchSlides = async () => {
-      const data = await getSlides();
-      setSlides(data);
-      setLoading(false);
-    };
-
-    fetchSlides();
-  }, []);
-
-  if (loading) return <p className="text-center">Завантаження...</p>;
-
   return (
     <Swiper
       modules={[Navigation, Pagination, Autoplay]}
+      spaceBetween={0}
+      slidesPerView={1}
       navigation
       pagination={{ clickable: true }}
       autoplay={{ delay: 3000 }}
-      loop={true}
-      className="w-full h-64 md:h-96"
+      className="main-slider"
     >
-      {slides.map((slide) => (
-        <SwiperSlide key={slide.id}>
-          <img
-            src={slide.image}
-            alt={slide.alt}
-            className="w-full h-full object-cover"
-          />
+      {images.map((src, index) => (
+        <SwiperSlide key={index}>
+          <img src={src} alt={`Slide ${index + 1}`} className="slider-image" />
         </SwiperSlide>
       ))}
     </Swiper>
