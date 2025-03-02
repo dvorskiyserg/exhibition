@@ -1,10 +1,11 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ChevronDown } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion"; // Анімація
-import { useTranslation } from "react-i18next"; // i18next
-import logo from "../assets/logo.png";
+import { Navbar, Nav, Dropdown, Container } from "rsuite";
 import { MdLogin } from "react-icons/md";
+import logo from "../assets/logo.png";
+import MenuIcon from "@rsuite/icons/Menu";
+import CloseIcon from "@rsuite/icons/Close";
+import { useTranslation } from "react-i18next";
 
 const languageIcons = {
   ua: "🇺🇦",
@@ -13,157 +14,137 @@ const languageIcons = {
 };
 
 const Header = () => {
-  const { i18n } = useTranslation(); // Використовуємо i18next
+  const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [langDropdown, setLangDropdown] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  // Функція для зміни мови
+  // Обробник зміни розміру вікна
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth >= 768) {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
-    setLangDropdown(false);
   };
 
   return (
-    <header className="bg-header text-white h-16 p-4 flex items-center fixed top-0 w-full z-50">
-      <div className="container mx-auto flex justify-between items-center">
-        {/* Логотип */}
-        <Link to="/" className="flex items-center">
-          <img src={logo} alt="Логотип" className="h-7 w-auto" />
-        </Link>
+    <Navbar
+      appearance="inverse"
+      className="rs-header"
+      style={{ position: "fixed", width: "100%", zIndex: 1000 }}
+    >
+      <Container>
+        <Navbar.Brand as={Link} to="/">
+          <img src={logo} alt="Логотип" style={{ height: "30px" }} />
+        </Navbar.Brand>
 
-        {/* Навігація */}
-        <nav className="hidden md:flex space-x-6">
-          <Link to="/" className="hover:text-amber-300 transition-colors">
-            Головна
-          </Link>
-          <Link
-            to="/dashboard"
-            className="hover:text-amber-300 transition-colors"
-          >
-            Виставки
-          </Link>
-          <Link
-            to="/profile"
-            className="hover:text-amber-300 transition-colors"
-          >
-            Учасникам
-          </Link>
-          <Link
-            to="/profile"
-            className="hover:text-amber-300 transition-colors"
-          >
-            Відвідувачам
-          </Link>
-          <Link
-            to="/profile"
-            className="hover:text-amber-300 transition-colors"
-          >
-            Про нас
-          </Link>
-          <Link to="/login" className="hover:text-amber-300 transition-colors">
-            <MdLogin />
-          </Link>
-
-          {/* Випадаючий список мови */}
-          <div className="relative">
-            <button
-              onClick={() => setLangDropdown(!langDropdown)}
-              className="flex items-center text-xl"
-            >
-              {languageIcons[i18n.language]}{" "}
-              <ChevronDown className="ml-1" size={16} />
-            </button>
-
-            {langDropdown && (
-              <div className="absolute right-0 mt-2 w-20 bg-white text-black rounded-lg shadow-md">
-                {Object.keys(languageIcons).map((lng) => (
-                  <button
-                    key={lng}
-                    onClick={() => changeLanguage(lng)}
-                    className="block px-4 py-2 text-xl w-full text-center hover:bg-gray-200"
-                  >
-                    {languageIcons[lng]}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </nav>
-
-        {/* Кнопка мобільного меню */}
-        <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
-      </div>
-
-      {/* Мобільне меню */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.nav
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden text-white p-4 absolute top-16 left-0 w-full bg-header shadow-lg"
-          >
-            <ul className="flex flex-col space-y-4">
-              <li>
-                <Link to="/" onClick={() => setIsOpen(false)}>
-                  Головна
-                </Link>
-              </li>
-              <li>
-                <Link to="/dashboard" onClick={() => setIsOpen(false)}>
-                  Виставки
-                </Link>
-              </li>
-              <li>
-                <Link to="/profile" onClick={() => setIsOpen(false)}>
-                  Учасникам
-                </Link>
-              </li>
-              <li>
-                <Link to="/profile" onClick={() => setIsOpen(false)}>
-                  Відвідувачам
-                </Link>
-              </li>
-              <li>
-                <Link to="/profile" onClick={() => setIsOpen(false)}>
-                  Про нас
-                </Link>
-              </li>
-              <li>
-                <Link to="/login" onClick={() => setIsOpen(false)}>
-                  <MdLogin />
-                </Link>
-              </li>
-              <li className="relative">
-                <button
-                  onClick={() => setLangDropdown(!langDropdown)}
-                  className="flex items-center text-xl"
-                >
-                  {languageIcons[i18n.language]}{" "}
-                  <ChevronDown className="ml-1" size={16} />
-                </button>
-                {langDropdown && (
-                  <div className="absolute left-0 mt-2 w-20 bg-white text-black rounded-lg shadow-md">
-                    {Object.keys(languageIcons).map((lng) => (
-                      <button
-                        key={lng}
-                        onClick={() => changeLanguage(lng)}
-                        className="block px-4 py-2 text-xl w-full text-center hover:bg-gray-200"
-                      >
-                        {languageIcons[lng]}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </li>
-            </ul>
-          </motion.nav>
+        {/* Перемикач мобільного меню */}
+        {isMobile && (
+          <Nav pullRight>
+            <Nav.Item onClick={() => setIsOpen(!isOpen)}>
+              {isOpen ? <CloseIcon /> : <MenuIcon />}
+            </Nav.Item>
+          </Nav>
         )}
-      </AnimatePresence>
-    </header>
+
+        {/* Основна навігація */}
+        {!isMobile && (
+          <Nav pullRight>
+            <Nav.Item as={Link} to="/">
+              Головна
+            </Nav.Item>
+            <Nav.Item as={Link} to="/dashboard">
+              Виставки
+            </Nav.Item>
+            <Nav.Item as={Link} to="/profile">
+              Учасникам
+            </Nav.Item>
+            <Nav.Item as={Link} to="/profile">
+              Відвідувачам
+            </Nav.Item>
+            <Nav.Item as={Link} to="/profile">
+              Про нас
+            </Nav.Item>
+            <Nav.Item as={Link} to="/login" icon={<MdLogin />} />
+
+            <Dropdown title={languageIcons[i18n.language]} noCaret>
+              {Object.keys(languageIcons).map((lng) => (
+                <Dropdown.Item key={lng} onClick={() => changeLanguage(lng)}>
+                  {languageIcons[lng]}
+                </Dropdown.Item>
+              ))}
+            </Dropdown>
+          </Nav>
+        )}
+
+        {/* Мобільне меню */}
+        {isMobile && isOpen && (
+          <div
+            style={{
+              position: "absolute",
+              top: "60px",
+              left: 0,
+              width: "100%",
+              background: "#fff",
+              zIndex: 999,
+              padding: "10px 0",
+              boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+            }}
+          >
+            <Nav vertical>
+              <Nav.Item as={Link} to="/" onClick={() => setIsOpen(false)}>
+                Головна
+              </Nav.Item>
+              <Nav.Item
+                as={Link}
+                to="/dashboard"
+                onClick={() => setIsOpen(false)}
+              >
+                Виставки
+              </Nav.Item>
+              <Nav.Item
+                as={Link}
+                to="/profile"
+                onClick={() => setIsOpen(false)}
+              >
+                Учасникам
+              </Nav.Item>
+              <Nav.Item
+                as={Link}
+                to="/profile"
+                onClick={() => setIsOpen(false)}
+              >
+                Відвідувачам
+              </Nav.Item>
+              <Nav.Item
+                as={Link}
+                to="/profile"
+                onClick={() => setIsOpen(false)}
+              >
+                Про нас
+              </Nav.Item>
+              <Nav.Item as={Link} to="/login" onClick={() => setIsOpen(false)}>
+                <MdLogin />
+              </Nav.Item>
+              <Dropdown title={languageIcons[i18n.language]} noCaret>
+                {Object.keys(languageIcons).map((lng) => (
+                  <Dropdown.Item key={lng} onClick={() => changeLanguage(lng)}>
+                    {languageIcons[lng]}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown>
+            </Nav>
+          </div>
+        )}
+      </Container>
+    </Navbar>
   );
 };
 

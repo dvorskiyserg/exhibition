@@ -1,29 +1,28 @@
-import { useAuth } from "../context/AuthContext";
-// import SlideManager from "../components/SlideManager";
+import React from "react";
+import { Container, Panel, Table } from "rsuite";
 
-const AdminPanel = () => {
-  const { user } = useAuth();
+const { Column, HeaderCell, Cell } = Table;
 
+const AdminPanel = ({ users }) => {
   return (
-    <div className="max-w-5xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h1 className="text-3xl font-bold text-primary mb-4">Адмін-панель</h1>
-      <p className="text-gray-600">
-        Ласкаво просимо,{" "}
-        <span className="font-semibold">
-          {user ? user.email : "адміністратор"}
-        </span>
-      </p>
-
-      <div className="mt-6 flex gap-4">
-        <button className="btn">Керувати користувачами</button>
-        <button className="btn">Налаштування</button>
-      </div>
-
-      {/* <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6">Адмін Панель</h1>
-        <SlideManager />
-      </div> */}
-    </div>
+    <Container>
+      <Panel header="Адмін Панель" bordered>
+        <Table height={400} data={users}>
+          <Column width={200} align="center">
+            <HeaderCell>ID</HeaderCell>
+            <Cell dataKey="id" />
+          </Column>
+          <Column width={200}>
+            <HeaderCell>Ім'я</HeaderCell>
+            <Cell dataKey="firstName" />
+          </Column>
+          <Column width={200}>
+            <HeaderCell>Email</HeaderCell>
+            <Cell dataKey="email" />
+          </Column>
+        </Table>
+      </Panel>
+    </Container>
   );
 };
 

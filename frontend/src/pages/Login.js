@@ -1,63 +1,56 @@
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Form, Button, Panel, Message, Container } from "rsuite";
 
-const Login = () => {
-  const { login } = useAuth();
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const Login = ({ onLogin }) => {
+  const [formValue, setFormValue] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    setError("");
     try {
-      const user = await login(email, password);
+      // Тут твій запит до Strapi
+      const response = await fetch("http://localhost:1337/api/auth/local", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          identifier: formValue.email,
+          password: formValue.password,
+        }),
+      });
 
-      if (user && user.role) {
-        if (user.role.name === "admin") {
-          navigate("/dashboard");
-        } else {
-          navigate("/profile");
-        }
-      } else {
-        setError("Користувача не знайдено. Зареєструйтеся.");
-      }
+      const data = await response.json();
+
+      if (data.error) throw new Error(data.error.message);
+
+      onLogin(data);
     } catch (err) {
-      setError("Неправильний логін або пароль.");
+      setError(err.message || "Помилка входу");
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold text-primary mb-4">Увійти</h1>
-      {error && <p className="text-red-500">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="email"
-          placeholder="Email"
-          className="input"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Пароль"
-          className="input"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit" className="btn w-full">
-          Увійти
-        </button>
-      </form>
-      <p className="text-center mt-4">
-        Ще не маєте акаунта?{" "}
-        <Link to="/register" className="text-primary font-semibold">
-          Зареєструватися
-        </Link>
-      </p>
-    </div>
+    <Container>
+      <Panel header="Увійти" bordered>
+        {error && (
+          <Message showIcon type="error">
+            {error}
+          </Message>
+        )}
+        <Form fluid onChange={setFormValue} formValue={formValue}>
+          <Form.Group>
+            <Form.ControlLabel>Email</Form.ControlLabel>
+            <Form.Control name="email" />
+          </Form.Group>
+          <Form.Group>
+            <Form.ControlLabel>Пароль</Form.ControlLabel>
+            <Form.Control name="password" type="password" />
+          </Form.Group>
+          <Button appearance="primary" onClick={handleSubmit}>
+            Увійти
+          </Button>
+        </Form>
+      </Panel>
+    </Container>
   );
 };
 

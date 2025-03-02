@@ -1,61 +1,33 @@
-/* Підключаємо згенерований файл Tailwind */
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@400;700&family=Montserrat:wght@500;700&display=swap');
 
-
-/* @import "tailwindcss/preflight";
-@import "tailwindcss/utilities"; */
-
-/* Глобальні змінні кольорів */
-:root {
-  --color-primary: #2563eb;  /* Синій */
-  --color-secondary: #9333ea; /* Фіолетовий */
-  --color-accent: #f59e0b;  /* Помаранчевий */
-  --color-danger: #ef4444;  /* Червоний */
-  --color-success: #10b981;  /* Зелений */
-  --color-header: #402056; /* для хедера */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
 }
 
-@layer components {
-  .btn {
-    @apply px-4 py-2 text-white rounded transition;
-    background-color:  rgba(93, 31, 151, 0.8); /* Кастомний колір */
-  }
-
-  .btn:hover {
-    background-color:var(--color-accent); /* secondary з прозорістю */
-  }
-
-  .input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded outline-none;
-    transition: border-color 0.3s;
-  }
-
-  .input:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 4px var(--color-primary);
-  }
-
-  .bg-header {
-    background-color: var(--color-header);
-  }
-
-  .nav-link {
-    font-family: "Montserrat", sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: color 0.3s;
-  }
-  
-  .nav-link:hover {
-    color: var(--color-accent);
-  }
- 
-  .mobile-menu-color {
-    background-color: rgb(78, 44, 109) !important;
-  }
-  
+.rs-header {
+  background-color: #2196f3;
+  color: white;
 }
 
+.rs-navbar .rs-navbar-item {
+  color: white;
+}
+
+.rs-navbar .rs-navbar-item:hover {
+  background-color: #1976d2;
+}
+
+.rs-dropdown-menu {
+  background-color: white;
+  border: 1px solid #ddd;
+}
+
+.rs-dropdown-item {
+  color: #333;
+}
+
+.rs-dropdown-item:hover {
+  background-color: #f5f5f5;
+}

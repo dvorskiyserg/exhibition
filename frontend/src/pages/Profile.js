@@ -1,22 +1,59 @@
-import { useAuth } from "../context/AuthContext";
+import React, { useState, useEffect } from "react";
+import { Container, Panel, Form, Button, Message } from "rsuite";
 
-const Profile = () => {
-  const { user } = useAuth();
+const Profile = ({ user, jwt }) => {
+  const [formValue, setFormValue] = useState(user);
+  const [message, setMessage] = useState("");
+
+  const handleSave = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:1337/api/users/${user.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwt}`,
+          },
+          body: JSON.stringify(formValue),
+        }
+      );
+
+      if (!response.ok) throw new Error("Не вдалося зберегти профіль");
+
+      setMessage("Дані успішно збережено!");
+    } catch (error) {
+      setMessage(error.message);
+    }
+  };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-3xl font-bold text-primary mb-4">Профіль</h1>
-      <p className="text-gray-600">
-        Ваш email:{" "}
-        <span className="font-semibold">
-          {user ? user.email : "користувач"}
-        </span>
-      </p>
-
-      <div className="mt-6">
-        <button className="btn">Редагувати профіль</button>
-      </div>
-    </div>
+    <Container>
+      <Panel header="Мій профіль" bordered>
+        {message && (
+          <Message showIcon type="info">
+            {message}
+          </Message>
+        )}
+        <Form fluid formValue={formValue} onChange={setFormValue}>
+          <Form.Group>
+            <Form.ControlLabel>Ім'я</Form.ControlLabel>
+            <Form.Control name="firstName" />
+          </Form.Group>
+          <Form.Group>
+            <Form.ControlLabel>Прізвище</Form.ControlLabel>
+            <Form.Control name="lastName" />
+          </Form.Group>
+          <Form.Group>
+            <Form.ControlLabel>Компанія</Form.ControlLabel>
+            <Form.Control name="company" />
+          </Form.Group>
+          <Button appearance="primary" onClick={handleSave}>
+            Зберегти
+          </Button>
+        </Form>
+      </Panel>
+    </Container>
   );
 };
 

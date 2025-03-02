@@ -1,10 +1,18 @@
-import Slider from "../components/Slider";
+import React from "react";
+import { Container, Header, Content, Panel } from "rsuite";
 
 const Home = () => {
   return (
-    <div>
-      <Slider />
-    </div>
+    <Container>
+      <Header>
+        <h2>Головна сторінка</h2>
+      </Header>
+      <Content>
+        <Panel bordered header="Ласкаво просимо">
+          Це головна сторінка сайту виставки.
+        </Panel>
+      </Content>
+    </Container>
   );
 };
 
