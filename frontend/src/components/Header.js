@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Navbar, Nav, Dropdown, Container } from "rsuite";
+import { Navbar, Nav, Dropdown } from "rsuite";
 import { MdLogin } from "react-icons/md";
-import logo from "../assets/logo.png";
+import { useTranslation } from "react-i18next";
 import MenuIcon from "@rsuite/icons/Menu";
 import CloseIcon from "@rsuite/icons/Close";
-import { useTranslation } from "react-i18next";
+import logo from "../assets/logo.png";
+import { motion, AnimatePresence } from "framer-motion";
+import "../index.css"; // Підключаємо CSS
 
 const languageIcons = {
   ua: "🇺🇦",
@@ -15,48 +17,40 @@ const languageIcons = {
 
 const Header = () => {
   const { i18n } = useTranslation();
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 880);
   const [isOpen, setIsOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  // Обробник зміни розміру вікна
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setIsOpen(false);
+  };
+
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) {
-        setIsOpen(false);
-      }
+      setIsMobile(window.innerWidth < 880);
+      if (window.innerWidth >= 880) setIsOpen(false);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-  };
-
   return (
-    <Navbar
-      appearance="inverse"
-      className="rs-header"
-      style={{ position: "fixed", width: "100%", zIndex: 1000 }}
-    >
-      <Container>
-        <Navbar.Brand as={Link} to="/">
-          <img src={logo} alt="Логотип" style={{ height: "30px" }} />
+    <>
+      <Navbar appearance="inverse" className="custom-navbar">
+        {/* Лого зліва */}
+        <Navbar.Brand as={Link} to="/" className="navbar-brand">
+          <img src={logo} alt="Логотип" />
         </Navbar.Brand>
 
-        {/* Перемикач мобільного меню */}
-        {isMobile && (
-          <Nav pullRight>
+        {/* Навігація або кнопка меню */}
+        {isMobile ? (
+          <Nav>
             <Nav.Item onClick={() => setIsOpen(!isOpen)}>
               {isOpen ? <CloseIcon /> : <MenuIcon />}
             </Nav.Item>
           </Nav>
-        )}
-
-        {/* Основна навігація */}
-        {!isMobile && (
-          <Nav pullRight>
+        ) : (
+          <Nav className="desktop-nav">
             <Nav.Item as={Link} to="/">
               Головна
             </Nav.Item>
@@ -72,9 +66,18 @@ const Header = () => {
             <Nav.Item as={Link} to="/profile">
               Про нас
             </Nav.Item>
-            <Nav.Item as={Link} to="/login" icon={<MdLogin />} />
-
-            <Dropdown title={languageIcons[i18n.language]} noCaret>
+            <Nav.Item as={Link} to="/login">
+              <MdLogin size={20} />
+            </Nav.Item>
+            <Dropdown
+              placement="bottomEnd"
+              renderToggle={(props, ref) => (
+                <span ref={ref} {...props} className="language-toggle">
+                  {languageIcons[i18n.language] || "🌐"}
+                </span>
+              )}
+              noCaret
+            >
               {Object.keys(languageIcons).map((lng) => (
                 <Dropdown.Item key={lng} onClick={() => changeLanguage(lng)}>
                   {languageIcons[lng]}
@@ -83,22 +86,19 @@ const Header = () => {
             </Dropdown>
           </Nav>
         )}
+      </Navbar>
 
-        {/* Мобільне меню */}
+      {/* Мобільне меню (вертикальне) */}
+      <AnimatePresence>
         {isMobile && isOpen && (
-          <div
-            style={{
-              position: "absolute",
-              top: "60px",
-              left: 0,
-              width: "100%",
-              background: "#fff",
-              zIndex: 999,
-              padding: "10px 0",
-              boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-            }}
+          <motion.div
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -100, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mobile-menu"
           >
-            <Nav vertical>
+            <Nav vertical style={{ width: "100%" }}>
               <Nav.Item as={Link} to="/" onClick={() => setIsOpen(false)}>
                 Головна
               </Nav.Item>
@@ -131,20 +131,36 @@ const Header = () => {
                 Про нас
               </Nav.Item>
               <Nav.Item as={Link} to="/login" onClick={() => setIsOpen(false)}>
-                <MdLogin />
+                <MdLogin size={20} />
               </Nav.Item>
-              <Dropdown title={languageIcons[i18n.language]} noCaret>
-                {Object.keys(languageIcons).map((lng) => (
-                  <Dropdown.Item key={lng} onClick={() => changeLanguage(lng)}>
-                    {languageIcons[lng]}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown>
+              <Nav.Item>
+                <Dropdown
+                  placement="bottomStart"
+                  renderToggle={(props, ref) => (
+                    <span ref={ref} {...props} className="language-toggle">
+                      {languageIcons[i18n.language] || "🌐"}
+                    </span>
+                  )}
+                  noCaret
+                >
+                  {Object.keys(languageIcons).map((lng) => (
+                    <Dropdown.Item
+                      key={lng}
+                      onClick={() => changeLanguage(lng)}
+                    >
+                      {languageIcons[lng]}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown>
+              </Nav.Item>
             </Nav>
-          </div>
+          </motion.div>
         )}
-      </Container>
-    </Navbar>
+      </AnimatePresence>
+
+      {/* Щоб контент не ховався під хедер */}
+      <div className="page-content" />
+    </>
   );
 };
 

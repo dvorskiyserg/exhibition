@@ -2,32 +2,64 @@
 
 body {
   margin: 0;
+    padding: 0;
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
 }
 
-.rs-header {
+/* Загальний стиль для хедера */
+.custom-navbar {
   background-color: #2196f3;
-  color: white;
+  height: 60px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.rs-navbar .rs-navbar-item {
-  color: white;
+/* Логотип */
+.custom-navbar .navbar-brand img {
+  height: 40px;
+  align-items: center;
 }
 
-.rs-navbar .rs-navbar-item:hover {
-  background-color: #1976d2;
+.navbar-brand {
+  padding-top: 8px !important;  
 }
 
-.rs-dropdown-menu {
-  background-color: white;
-  border: 1px solid #ddd;
+/* Навігація десктопна */
+.desktop-nav {
+  display: flex;
+  align-items: center;
 }
 
-.rs-dropdown-item {
-  color: #333;
+/* Мобільне меню */
+.mobile-menu {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  padding: 15px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
 }
 
-.rs-dropdown-item:hover {
-  background-color: #f5f5f5;
+/* Іконка мови */
+.language-toggle {
+  cursor: pointer;
+  font-size: 20px;
+}
+
+/* Для компенсації фіксованого хедера */
+.page-content {
+  margin-top: 60px;
 }
