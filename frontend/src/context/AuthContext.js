@@ -5,12 +5,17 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // user = { jwt, role }
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (error) {
+        console.error("Помилка парсингу користувача з localStorage", error);
+        localStorage.removeItem("user");
+      }
     }
   }, []);
 

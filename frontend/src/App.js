@@ -63,14 +63,14 @@ function App() {
                     </PrivateRoute>
                   }
                 />
-                <Route
+                {/* <Route
                   path="/admin"
                   element={
                     <PrivateRoute adminOnly>
                       <AdminPanel />
                     </PrivateRoute>
                   }
-                />
+                /> */}
               </Routes>
             </div>
           </div>

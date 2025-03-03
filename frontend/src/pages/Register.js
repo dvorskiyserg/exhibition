@@ -1,65 +1,67 @@
 import React, { useState } from "react";
-import { Container, Panel, Form, Button, Message } from "rsuite";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import { Form, Button, Message, Panel } from "rsuite";
 
 const Register = () => {
-  const [formValue, setFormValue] = useState({});
-  const [message, setMessage] = useState("");
+  const [formValue, setFormValue] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:1337/api/auth/local/register",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...formValue,
-            username: formValue.email, // Strapi вимагає username
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (data.error) throw new Error(data.error.message);
-
-      setMessage("Реєстрація успішна! Ви можете увійти.");
-    } catch (error) {
-      setMessage(error.message);
+      setError("");
+      await axios.post("http://localhost:1337/api/auth/local/register", {
+        username: formValue.username,
+        email: formValue.email,
+        password: formValue.password,
+      });
+      navigate("/login");
+    } catch (err) {
+      setError("Не вдалося зареєструватися");
     }
   };
 
   return (
-    <Container className="register-container">
-      <Panel header="Реєстрація" bordered className="register-panel">
-        {message && (
-          <Message showIcon type="info">
-            {message}
-          </Message>
-        )}
-        <Form fluid formValue={formValue} onChange={setFormValue}>
+    <div style={{ maxWidth: 400, margin: "100px auto" }}>
+      <Panel header="Реєстрація" bordered>
+        <Form
+          fluid
+          onChange={setFormValue}
+          formValue={formValue}
+          onSubmit={handleRegister}
+        >
+          <Form.Group>
+            <Form.ControlLabel>Ім'я користувача</Form.ControlLabel>
+            <Form.Control name="username" required />
+          </Form.Group>
           <Form.Group>
             <Form.ControlLabel>Email</Form.ControlLabel>
-            <Form.Control name="email" />
+            <Form.Control name="email" type="email" required />
           </Form.Group>
           <Form.Group>
             <Form.ControlLabel>Пароль</Form.ControlLabel>
-            <Form.Control name="password" type="password" />
+            <Form.Control name="password" type="password" required />
           </Form.Group>
+          {error && <Message type="error">{error}</Message>}
           <Form.Group>
-            <Button appearance="primary" onClick={handleRegister}>
+            <Button appearance="primary" type="submit">
               Зареєструватися
             </Button>
           </Form.Group>
         </Form>
-        <div className="login-link">
-          <p>
-            Вже маєте обліковий запис? <Link to="/login">Увійти</Link>
-          </p>
-        </div>
+        <p style={{ marginTop: "10px", textAlign: "center" }}>
+          Вже є акаунт?{" "}
+          <Link to="/login" style={{ textDecoration: "underline" }}>
+            Увійти
+          </Link>
+        </p>
       </Panel>
-    </Container>
+    </div>
   );
 };
 
