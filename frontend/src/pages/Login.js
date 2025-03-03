@@ -1,73 +1,86 @@
 import React, { useState } from "react";
-import { Form, Button, Panel, Message, Container } from "rsuite";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import { Form, Button, Message, Panel } from "rsuite";
 
-const Login = ({ onLogin }) => {
-  const [formValue, setFormValue] = useState({ email: "", password: "" });
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async () => {
+  const handleLogin = async () => {
     setError("");
+
     try {
-      const response = await fetch("http://localhost:1337/api/auth/local", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          identifier: formValue.email,
-          password: formValue.password,
-        }),
-      });
+      const response = await axios.post(
+        "http://localhost:1337/api/auth/local",
+        {
+          identifier: email,
+          password,
+        }
+      );
 
-      const data = await response.json();
+      const jwt = response.data.jwt;
+      const user = response.data.user;
 
-      if (data.error) throw new Error(data.error.message);
+      if (jwt) {
+        // Запитуємо деталі користувача після логіну
+        const meResponse = await axios.get(
+          "http://localhost:1337/api/users/me?populate=role",
+          {
+            headers: { Authorization: `Bearer ${jwt}` },
+          }
+        );
 
-      onLogin(data);
+        const fullUser = meResponse.data;
+        const role = fullUser.role?.name || "authenticated"; // Тепер роль точно є
 
-      const userRole = data.user?.role?.type;
+        // Зберігаємо дані в контексті
+        login({ jwt, role });
 
-      if (userRole === "admin" || userRole === "superadmin") {
-        navigate("/dashboard");
+        // Перенаправлення
+        if (role === "admin") {
+          navigate("/dashboard");
+        } else {
+          navigate("/profile");
+        }
       } else {
-        navigate("/profile");
+        setError("Помилка авторизації. Перевірте дані.");
       }
     } catch (err) {
-      setError(err.message || "Помилка входу");
+      setError("Невірний email або пароль.");
     }
   };
 
   return (
-    <Container className="login-container">
-      <Panel header="Увійти" bordered className="login-panel">
-        {error && (
-          <Message showIcon type="error">
-            {error}
-          </Message>
-        )}
-        <Form fluid onChange={setFormValue} formValue={formValue}>
+    <div style={{ maxWidth: 400, margin: "100px auto" }}>
+      <Panel header="Вхід" bordered>
+        {error && <Message type="error">{error}</Message>}
+        <Form fluid>
           <Form.Group>
             <Form.ControlLabel>Email</Form.ControlLabel>
-            <Form.Control name="email" />
+            <Form.Control name="email" value={email} onChange={setEmail} />
           </Form.Group>
           <Form.Group>
             <Form.ControlLabel>Пароль</Form.ControlLabel>
-            <Form.Control name="password" type="password" />
+            <Form.Control
+              name="password"
+              type="password"
+              value={password}
+              onChange={setPassword}
+            />
           </Form.Group>
           <Form.Group>
-            <Button appearance="primary" onClick={handleSubmit}>
+            <Button appearance="primary" onClick={handleLogin}>
               Увійти
             </Button>
           </Form.Group>
         </Form>
-        <div className="register-link">
-          <p>
-            Ще не маєте облікового запису?{" "}
-            <Link to="/register">Зареєструватися</Link>
-          </p>
-        </div>
       </Panel>
-    </Container>
+    </div>
   );
 };
 

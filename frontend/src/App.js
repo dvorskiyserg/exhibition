@@ -45,19 +45,8 @@ function App() {
                   CassName="container mx-auto"
                   element={<Home />}
                 />
-                <Route
-                  path="/login"
-                  element={<Login onLogin={handleLogin} />}
-                />
+                <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route
-                  path="/dashboard"
-                  element={
-                    <PrivateRoute>
-                      <Dashboard />
-                    </PrivateRoute>
-                  }
-                />
                 <Route
                   path="/profile"
                   element={
@@ -67,18 +56,18 @@ function App() {
                   }
                 />
                 <Route
-                  path="/admin"
-                  element={
-                    <PrivateRoute>
-                      <AdminPanel />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
                   path="/dashboard"
                   element={
                     <PrivateRoute adminOnly>
                       <Dashboard />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/admin"
+                  element={
+                    <PrivateRoute adminOnly>
+                      <AdminPanel />
                     </PrivateRoute>
                   }
                 />
