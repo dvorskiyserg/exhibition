@@ -5,12 +5,12 @@ import { useAuth } from "../context/AuthContext";
 const PrivateRoute = ({ children, adminOnly = false }) => {
   const { user } = useAuth();
 
-  if (!user) {
+  if (!user || !user.jwt) {
     return <Navigate to="/login" />;
   }
 
   if (adminOnly && user.role !== "admin") {
-    return <Navigate to="/" />;
+    return <Navigate to="/profile" />;
   }
 
   return children;

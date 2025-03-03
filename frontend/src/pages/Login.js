@@ -1,98 +1,76 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Form, Button, Message, Panel } from "rsuite";
+import { useNavigate, Link } from "react-router-dom";
+import { Form, Button, Panel, FlexboxGrid, Message } from "rsuite";
 
 const Login = () => {
-  const [formValue, setFormValue] = useState({
-    identifier: "",
-    password: "",
-  });
-  const [error, setError] = useState("");
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      setError("");
+      await login(identifier, password);
+      const userData = JSON.parse(localStorage.getItem("user"));
 
-      const response = await axios.post(
-        "http://localhost:1337/api/auth/local",
-        {
-          identifier: formValue.identifier,
-          password: formValue.password,
-        }
-      );
-
-      const { jwt, user } = response.data;
-
-      // Запит даних користувача для отримання ролі
-      const userResponse = await axios.get(
-        "http://localhost:1337/api/users/me?populate=role",
-        {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        }
-      );
-
-      const userData = {
-        jwt,
-        role: userResponse.data.role?.name || "authenticated",
-      };
-
-      console.log("Отримано користувача:", userData);
-
-      // Зберігаємо користувача у контекст
-      login(userData);
-
-      // Переходимо на потрібну сторінку в залежності від ролі
-      if (userData.role.toLowerCase() === "admin") {
+      if (userData.role === "admin") {
         navigate("/dashboard");
       } else {
         navigate("/profile");
       }
     } catch (err) {
-      console.error("Помилка входу:", err);
-      setError("Помилка входу. Перевірте дані та спробуйте ще раз.");
+      setError("Невірний логін або пароль.");
     }
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "50px auto", padding: "20px" }}>
-      <Panel header="Вхід" bordered>
-        {error && <Message showIcon type="error" description={error} />}
-
-        <Form
-          fluid
-          onChange={(value) => setFormValue(value)}
-          formValue={formValue}
-        >
-          <Form.Group>
-            <Form.ControlLabel>Email</Form.ControlLabel>
-            <Form.Control name="identifier" />
-          </Form.Group>
-          <Form.Group>
-            <Form.ControlLabel>Пароль</Form.ControlLabel>
-            <Form.Control name="password" type="password" />
-          </Form.Group>
-          <Form.Group>
-            <Button appearance="primary" onClick={handleLogin}>
-              Увійти
-            </Button>
-          </Form.Group>
-        </Form>
-
-        {/* Перехід до реєстрації, якщо ще немає акаунта */}
-        <div style={{ marginTop: 10, textAlign: "center" }}>
-          Ще не маєте акаунта?{" "}
-          <a href="/register" style={{ color: "#007bff", cursor: "pointer" }}>
-            Зареєструватися
-          </a>
-        </div>
-      </Panel>
-    </div>
+    <FlexboxGrid justify="center" style={{ marginTop: "90px" }}>
+      <FlexboxGrid.Item
+        colspan={24}
+        style={{
+          maxWidth: "400px", // Максимальна ширина для великих екранів
+          width: "90%", // Адаптивно займає 90% ширини на мобільних
+        }}
+      >
+        <Panel header={<h3>Вхід</h3>} bordered>
+          {error && <Message type="error">{error}</Message>}
+          <Form fluid>
+            <Form.Group>
+              <Form.ControlLabel>Email або Логін</Form.ControlLabel>
+              <Form.Control
+                name="identifier"
+                onChange={setIdentifier}
+                value={identifier}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.ControlLabel>Пароль</Form.ControlLabel>
+              <Form.Control
+                name="password"
+                type="password"
+                onChange={setPassword}
+                value={password}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Button
+                appearance="primary"
+                block
+                onClick={handleLogin}
+                style={{ backgroundColor: "#ff9800", border: "none" }}
+              >
+                Увійти
+              </Button>
+            </Form.Group>
+          </Form>
+          <p style={{ textAlign: "center" }}>
+            Не маєте акаунта? <Link to="/register">Зареєструватися</Link>
+          </p>
+        </Panel>
+      </FlexboxGrid.Item>
+    </FlexboxGrid>
   );
 };
 

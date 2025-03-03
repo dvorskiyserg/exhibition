@@ -1,67 +1,82 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import { Form, Button, Message, Panel } from "rsuite";
+import axios from "axios";
+import { Form, Button, Panel, FlexboxGrid, Message } from "rsuite";
 
 const Register = () => {
-  const [formValue, setFormValue] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleRegister = async () => {
     try {
-      setError("");
       await axios.post("http://localhost:1337/api/auth/local/register", {
-        username: formValue.username,
-        email: formValue.email,
-        password: formValue.password,
+        username,
+        email,
+        password,
       });
-      navigate("/login");
+
+      await login(email, password);
+      navigate("/profile");
     } catch (err) {
-      setError("Не вдалося зареєструватися");
+      setError("Помилка реєстрації, можливо, email вже використовується.");
     }
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "100px auto" }}>
-      <Panel header="Реєстрація" bordered>
-        <Form
-          fluid
-          onChange={setFormValue}
-          formValue={formValue}
-          onSubmit={handleRegister}
-        >
-          <Form.Group>
-            <Form.ControlLabel>Ім'я користувача</Form.ControlLabel>
-            <Form.Control name="username" required />
-          </Form.Group>
-          <Form.Group>
-            <Form.ControlLabel>Email</Form.ControlLabel>
-            <Form.Control name="email" type="email" required />
-          </Form.Group>
-          <Form.Group>
-            <Form.ControlLabel>Пароль</Form.ControlLabel>
-            <Form.Control name="password" type="password" required />
-          </Form.Group>
+    <FlexboxGrid justify="center" style={{ marginTop: "90px" }}>
+      <FlexboxGrid.Item
+        colspan={12}
+        style={{
+          maxWidth: "400px", // Максимальна ширина для великих екранів
+          width: "90%", // Адаптивно займає 90% ширини на мобільних
+        }}
+      >
+        <Panel header={<h3>Реєстрація</h3>} bordered>
           {error && <Message type="error">{error}</Message>}
-          <Form.Group>
-            <Button appearance="primary" type="submit">
-              Зареєструватися
-            </Button>
-          </Form.Group>
-        </Form>
-        <p style={{ marginTop: "10px", textAlign: "center" }}>
-          Вже є акаунт?{" "}
-          <Link to="/login" style={{ textDecoration: "underline" }}>
-            Увійти
-          </Link>
-        </p>
-      </Panel>
-    </div>
+          <Form fluid>
+            <Form.Group>
+              <Form.ControlLabel>Логін</Form.ControlLabel>
+              <Form.Control
+                name="username"
+                onChange={setUsername}
+                value={username}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.ControlLabel>Email</Form.ControlLabel>
+              <Form.Control
+                name="email"
+                type="email"
+                onChange={setEmail}
+                value={email}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.ControlLabel>Пароль</Form.ControlLabel>
+              <Form.Control
+                name="password"
+                type="password"
+                onChange={setPassword}
+                value={password}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Button appearance="primary" block onClick={handleRegister}>
+                Зареєструватися
+              </Button>
+            </Form.Group>
+          </Form>
+          <p>
+            Вже маєте акаунт? <Link to="/login">Увійти</Link>
+          </p>
+        </Panel>
+      </FlexboxGrid.Item>
+    </FlexboxGrid>
   );
 };
 

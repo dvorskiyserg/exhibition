@@ -22,16 +22,6 @@ import Home from "./pages/Home";
 const queryClient = new QueryClient();
 
 function App() {
-  function handleLogin(userData) {
-    console.log("Успішний вхід:", userData);
-
-    // Збереження токену у localStorage
-    localStorage.setItem("jwt", userData.jwt);
-
-    // Тут можна оновити глобальний контекст користувача, якщо такий є
-    // наприклад: setUser(userData.user);
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
       <Router>

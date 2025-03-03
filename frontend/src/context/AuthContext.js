@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
 
 const AuthContext = createContext();
-
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
@@ -10,18 +10,40 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (error) {
-        console.error("Помилка парсингу користувача з localStorage", error);
-        localStorage.removeItem("user");
-      }
+      const parsedUser = JSON.parse(savedUser);
+      setUser(parsedUser);
     }
   }, []);
 
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+  const login = async (identifier, password) => {
+    try {
+      const res = await axios.post("http://localhost:1337/api/auth/local", {
+        identifier,
+        password,
+      });
+
+      const jwt = res.data.jwt;
+
+      // Запитуємо додаткову інформацію (роль)
+      const userResponse = await axios.get(
+        "http://localhost:1337/api/users/me?populate=role",
+        {
+          headers: { Authorization: `Bearer ${jwt}` },
+        }
+      );
+
+      const userData = {
+        jwt,
+        role: userResponse.data.role?.name.toLowerCase() || "authenticated",
+      };
+
+      console.log("User після логіну:", userData);
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+    } catch (error) {
+      console.error("Помилка логіну:", error);
+      throw error;
+    }
   };
 
   const logout = () => {
