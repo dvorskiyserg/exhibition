@@ -1,15 +1,18 @@
 import React from "react";
 import Slider from "../components/Slider";
 import { Container, Header, Content, Panel } from "rsuite";
+import AboutExhibition from "../components/AboutExhibition";
+import NewsSlider from "../components/NewsSlider";
+import OrderInvitation from "../components/OrderInvitation";
 
 const Home = () => {
   return (
     <Container>
       <Slider />
       <Content>
-        <Panel bordered header="Ласкаво просимо">
-          Це головна сторінка сайту виставки.
-        </Panel>
+        <AboutExhibition />
+        <NewsSlider />
+        <OrderInvitation />
       </Content>
     </Container>
   );

@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Container, Panel, Form, Button, Message } from "rsuite";
+import React, { useState } from "react";
+import { Container, Panel, Form, Button, Message, ButtonToolbar } from "rsuite";
+import { useAuth } from "../context/AuthContext"; // Додаємо хук для виходу
 
 const Profile = ({ user, jwt }) => {
   const [formValue, setFormValue] = useState(user);
   const [message, setMessage] = useState("");
+
+  const { logout } = useAuth(); // Отримуємо функцію виходу
 
   const handleSave = async () => {
     try {
@@ -27,6 +30,11 @@ const Profile = ({ user, jwt }) => {
     }
   };
 
+  const handleLogout = () => {
+    logout(); // Очищення локального збереження і стану
+    window.location.href = "/"; // Повернення на головну сторінку після виходу
+  };
+
   return (
     <Container>
       <Panel header="Мій профіль" bordered>
@@ -48,9 +56,14 @@ const Profile = ({ user, jwt }) => {
             <Form.ControlLabel>Компанія</Form.ControlLabel>
             <Form.Control name="company" />
           </Form.Group>
-          <Button appearance="primary" onClick={handleSave}>
-            Зберегти
-          </Button>
+          <ButtonToolbar>
+            <Button appearance="primary" onClick={handleSave}>
+              Зберегти
+            </Button>
+            <Button appearance="subtle" color="red" onClick={handleLogout}>
+              Вийти
+            </Button>
+          </ButtonToolbar>
         </Form>
       </Panel>
     </Container>

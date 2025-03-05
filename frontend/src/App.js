@@ -16,6 +16,7 @@ import AdminPanel from "./pages/AdminPanel";
 import PrivateRoute from "./components/PrivateRoute";
 import Header from "./components/Header";
 import Home from "./pages/Home";
+import Footer from "./components/Footer";
 
 // import { Button, Container, Header as RSHeader, Content, Footer } from "rsuite";
 
@@ -66,6 +67,7 @@ function App() {
           </div>
         </AuthProvider>
       </Router>
+      <Footer />
     </QueryClientProvider>
   );
 }

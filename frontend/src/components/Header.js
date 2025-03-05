@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Navbar, Nav, Dropdown } from "rsuite";
 import { MdLogin } from "react-icons/md";
+import AdminIcon from "@rsuite/icons/Admin";
 import { useTranslation } from "react-i18next";
+import { motion, AnimatePresence } from "framer-motion";
 import MenuIcon from "@rsuite/icons/Menu";
 import CloseIcon from "@rsuite/icons/Close";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { motion, AnimatePresence } from "framer-motion";
 import "../styles/index.css";
 
 const languageIcons = {
@@ -25,6 +28,31 @@ const Header = () => {
   const { i18n } = useTranslation();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 880);
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [langDropdown, setLangDropdown] = useState(false);
+
+  // Функція для визначення іконки входу
+  const getLoginIcon = () => {
+    if (user) {
+      return (
+        <AdminIcon
+          style={{ fontSize: "18px", cursor: "pointer" }}
+          onClick={() =>
+            navigate(user.role === "admin" ? "/dashboard" : "/profile")
+          }
+        />
+      );
+    } else {
+      return (
+        <MdLogin
+          size={22}
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/login")}
+        />
+      );
+    }
+  };
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -72,8 +100,8 @@ const Header = () => {
             <Nav.Item as={Link} to="/profile">
               Про нас
             </Nav.Item>
-            <Nav.Item as={Link} to="/login">
-              <MdLogin size={20} />
+            <Nav.Item>
+              <div className="loginIcon">{getLoginIcon()}</div>
             </Nav.Item>
             {/* Dropdown з прапорцем для десктопу */}
             <Dropdown
@@ -137,8 +165,8 @@ const Header = () => {
               >
                 Про нас
               </Nav.Item>
-              <Nav.Item as={Link} to="/login" onClick={() => setIsOpen(false)}>
-                <MdLogin size={20} />
+              <Nav.Item>
+                <div className="loginIcon">{getLoginIcon()}</div>
               </Nav.Item>
             </Nav>
 
