@@ -16,7 +16,7 @@ const Login = () => {
       const userData = JSON.parse(localStorage.getItem("user"));
 
       if (userData.role === "admin") {
-        navigate("/dashboard");
+        navigate("/admin/dashboard");
       } else {
         navigate("/profile");
       }
@@ -26,7 +26,10 @@ const Login = () => {
   };
 
   return (
-    <FlexboxGrid justify="center" style={{ marginTop: "90px" }}>
+    <FlexboxGrid
+      justify="center"
+      style={{ marginTop: "120px", marginBottom: "80px" }}
+    >
       <FlexboxGrid.Item
         colspan={24}
         style={{

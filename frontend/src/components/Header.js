@@ -30,26 +30,30 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [langDropdown, setLangDropdown] = useState(false);
+  // const [langDropdown, setLangDropdown] = useState(false);
 
   // Функція для визначення іконки входу
   const getLoginIcon = () => {
     if (user) {
+      const userRole = user.role?.toLowerCase(); // Перетворюємо роль у нижній регістр для надійності
+
       return (
         <AdminIcon
           style={{ fontSize: "18px", cursor: "pointer" }}
-          onClick={() =>
-            navigate(user.role === "admin" ? "/dashboard" : "/profile")
-          }
+          onClick={() => {
+            if (userRole === "admin") {
+              navigate("/admin/dashboard");
+            } else {
+              navigate("/profile");
+            }
+          }}
         />
       );
     } else {
       return (
-        <MdLogin
-          size={22}
-          style={{ cursor: "pointer" }}
-          onClick={() => navigate("/login")}
-        />
+        <Link className="LoginLink" to="/login">
+          <MdLogin size={22} style={{ cursor: "pointer" }} />
+        </Link>
       );
     }
   };
@@ -70,7 +74,58 @@ const Header = () => {
 
   return (
     <>
-      <Navbar appearance="inverse" className="custom-navbar">
+      <div
+        className="preheader"
+        style={{
+          backgroundColor: "#f1f1f1",
+          height: "30px",
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          padding: "0 20px",
+          gap: "15px",
+          position: "fixed",
+          width: "100%",
+          top: 0,
+          zIndex: 1101,
+          boxSizing: "border-box",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+          {getLoginIcon()}
+
+          <Dropdown
+            placement="bottomEnd"
+            renderToggle={(props, ref) => (
+              <span
+                ref={ref}
+                {...props}
+                style={{ cursor: "pointer", fontSize: "20px" }}
+              >
+                {languageIcons[i18n.language]}
+              </span>
+            )}
+            noCaret
+          >
+            {Object.keys(languageIcons).map((lng) => (
+              <Dropdown.Item key={lng} onClick={() => changeLanguage(lng)}>
+                {languageIcons[lng]}
+              </Dropdown.Item>
+            ))}
+          </Dropdown>
+        </div>
+      </div>
+
+      <Navbar
+        appearance="inverse"
+        className="custom-navbar"
+        style={{
+          position: "fixed",
+          top: "30px", // додано зміщення вниз
+          width: "100%",
+          zIndex: 1100, // має бути менше, ніж у preheader
+        }}
+      >
         {/* Лого зліва */}
         <Navbar.Brand as={Link} to="/" className="navbar-brand">
           <img src={logo} alt="Логотип" />
@@ -88,7 +143,7 @@ const Header = () => {
             <Nav.Item as={Link} to="/">
               Головна
             </Nav.Item>
-            <Nav.Item as={Link} to="/dashboard">
+            <Nav.Item as={Link} to="/admin/dashboard">
               Виставки
             </Nav.Item>
             <Nav.Item as={Link} to="/profile">
@@ -100,25 +155,6 @@ const Header = () => {
             <Nav.Item as={Link} to="/profile">
               Про нас
             </Nav.Item>
-            <Nav.Item>
-              <div className="loginIcon">{getLoginIcon()}</div>
-            </Nav.Item>
-            {/* Dropdown з прапорцем для десктопу */}
-            <Dropdown
-              placement="bottomEnd"
-              renderToggle={(props, ref) => (
-                <span ref={ref} {...props} className="language-toggle">
-                  {languageIcons[i18n.language] || "🌐"}
-                </span>
-              )}
-              noCaret
-            >
-              {Object.keys(languageIcons).map((lng) => (
-                <Dropdown.Item key={lng} onClick={() => changeLanguage(lng)}>
-                  {languageIcons[lng]}
-                </Dropdown.Item>
-              ))}
-            </Dropdown>
           </Nav>
         )}
       </Navbar>

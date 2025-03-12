@@ -8,15 +8,17 @@ import {
 } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./context/AuthContext";
-import Dashboard from "./pages/Dashboard";
+// import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import AdminPanel from "./pages/AdminPanel";
 import PrivateRoute from "./components/PrivateRoute";
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
+import DashboardPage from "./components/admin/DashboardPage";
+import UsersPage from "./components/admin/UsersPage";
+import NewsPage from "./components/admin/NewsPage";
 
 // import { Button, Container, Header as RSHeader, Content, Footer } from "rsuite";
 
@@ -46,22 +48,9 @@ function App() {
                     </PrivateRoute>
                   }
                 />
-                <Route
-                  path="/dashboard"
-                  element={
-                    <PrivateRoute adminOnly>
-                      <Dashboard />
-                    </PrivateRoute>
-                  }
-                />
-                {/* <Route
-                  path="/admin"
-                  element={
-                    <PrivateRoute adminOnly>
-                      <AdminPanel />
-                    </PrivateRoute>
-                  }
-                /> */}
+                <Route path="/admin/dashboard" element={<DashboardPage />} />
+                <Route path="/admin/users" element={<UsersPage />} />
+                <Route path="/admin/news" element={<NewsPage />} />
               </Routes>
             </div>
           </div>
