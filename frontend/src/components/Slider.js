@@ -16,7 +16,7 @@ import logoCircle from "../assets/slider/makosh_logo_circle.png";
 const slides = [
   { type: "image", src: img1 },
   { type: "image", src: img2 },
-  { type: "video", src: "/assets/video/promo-video.mp4" }, // Шлях до відео
+  // { type: "video", src: "/assets/video/promo-video.mp4" }, // Шлях до відео
   { type: "image", src: img3 },
   { type: "image", src: img4 },
 ];

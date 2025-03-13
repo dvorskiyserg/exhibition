@@ -1,28 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Navbar, Nav, Dropdown } from "rsuite";
 import { MdLogin } from "react-icons/md";
+import { FaInstagram } from "react-icons/fa";
 import AdminIcon from "@rsuite/icons/Admin";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import MenuIcon from "@rsuite/icons/Menu";
 import CloseIcon from "@rsuite/icons/Close";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import "../styles/index.css";
 
-const languageIcons = {
-  ua: "🇺🇦",
-  en: "🇬🇧",
-  de: "🇩🇪",
-};
-
-const languageNames = {
-  ua: "UA",
-  en: "EN",
-  de: "DE",
-};
+const languageIcons = { ua: "🇺🇦", en: "🇬🇧", de: "🇩🇪" };
+const languageNames = { ua: "UA", en: "EN", de: "DE" };
 
 const Header = () => {
   const { i18n } = useTranslation();
@@ -30,23 +21,16 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
-  // const [langDropdown, setLangDropdown] = useState(false);
 
-  // Функція для визначення іконки входу
   const getLoginIcon = () => {
     if (user) {
-      const userRole = user.role?.toLowerCase(); // Перетворюємо роль у нижній регістр для надійності
-
+      const userRole = user.role?.toLowerCase();
       return (
         <AdminIcon
           style={{ fontSize: "18px", cursor: "pointer" }}
-          onClick={() => {
-            if (userRole === "admin") {
-              navigate("/admin/dashboard");
-            } else {
-              navigate("/profile");
-            }
-          }}
+          onClick={() =>
+            navigate(userRole === "admin" ? "/admin/dashboard" : "/profile")
+          }
         />
       );
     } else {
@@ -82,56 +66,57 @@ const Header = () => {
           display: "flex",
           justifyContent: "flex-end",
           alignItems: "center",
-          padding: "0 20px",
-          gap: "15px",
           position: "fixed",
           width: "100%",
           top: 0,
           zIndex: 1101,
           boxSizing: "border-box",
+          padding: "0 40px",
+          gap: "2em",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-          {getLoginIcon()}
+        <a
+          href="https://www.instagram.com/your_instagram_profile"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="insta-icon"
+          style={{ color: "#333", fontSize: "20px", cursor: "pointer" }}
+        >
+          <FaInstagram />
+        </a>
 
-          <Dropdown
-            placement="bottomEnd"
-            renderToggle={(props, ref) => (
-              <span
-                ref={ref}
-                {...props}
-                style={{ cursor: "pointer", fontSize: "20px" }}
-              >
-                {languageIcons[i18n.language]}
-              </span>
-            )}
-            noCaret
-          >
-            {Object.keys(languageIcons).map((lng) => (
-              <Dropdown.Item key={lng} onClick={() => changeLanguage(lng)}>
-                {languageIcons[lng]}
-              </Dropdown.Item>
-            ))}
-          </Dropdown>
-        </div>
+        {getLoginIcon()}
+
+        <Dropdown
+          placement="bottomEnd"
+          renderToggle={(props, ref) => (
+            <span
+              ref={ref}
+              {...props}
+              style={{ cursor: "pointer", fontSize: "20px" }}
+            >
+              {languageIcons[i18n.language]}
+            </span>
+          )}
+          noCaret
+        >
+          {Object.keys(languageIcons).map((lng) => (
+            <Dropdown.Item key={lng} onClick={() => changeLanguage(lng)}>
+              {languageIcons[lng]}
+            </Dropdown.Item>
+          ))}
+        </Dropdown>
       </div>
 
       <Navbar
         appearance="inverse"
         className="custom-navbar"
-        style={{
-          position: "fixed",
-          top: "30px", // додано зміщення вниз
-          width: "100%",
-          zIndex: 1100, // має бути менше, ніж у preheader
-        }}
+        style={{ position: "fixed", top: "30px", width: "100%", zIndex: 1100 }}
       >
-        {/* Лого зліва */}
         <Navbar.Brand as={Link} to="/" className="navbar-brand">
           <img src={logo} alt="Логотип" />
         </Navbar.Brand>
 
-        {/* Навігація або кнопка меню */}
         {isMobile ? (
           <Nav>
             <Nav.Item onClick={() => setIsOpen(!isOpen)}>
@@ -159,7 +144,6 @@ const Header = () => {
         )}
       </Navbar>
 
-      {/* Мобільне меню */}
       <AnimatePresence>
         {isMobile && isOpen && (
           <motion.div
@@ -168,6 +152,12 @@ const Header = () => {
             exit={{ y: -100, opacity: 0 }}
             transition={{ duration: 0.3 }}
             className="mobile-menu"
+            style={{
+              position: "fixed",
+              top: "86px",
+              width: "100%",
+              zIndex: 1099,
+            }}
           >
             <Nav vertical style={{ width: "100%" }}>
               <Nav.Item as={Link} to="/" onClick={() => setIsOpen(false)}>
@@ -175,7 +165,7 @@ const Header = () => {
               </Nav.Item>
               <Nav.Item
                 as={Link}
-                to="/dashboard"
+                to="/admin/dashboard"
                 onClick={() => setIsOpen(false)}
               >
                 Виставки
@@ -201,12 +191,9 @@ const Header = () => {
               >
                 Про нас
               </Nav.Item>
-              <Nav.Item>
-                <div className="loginIcon">{getLoginIcon()}</div>
-              </Nav.Item>
+              <Nav.Item>{getLoginIcon()}</Nav.Item>
             </Nav>
 
-            {/* Проста текстова мова у мобільному меню */}
             <div className="mobile-language-switcher">
               {Object.keys(languageNames).map((lng) => (
                 <span
@@ -224,8 +211,7 @@ const Header = () => {
         )}
       </AnimatePresence>
 
-      {/* Щоб контент не ховався під хедер */}
-      <div className="page-content" />
+      <div style={{ paddingTop: "90px" }} />
     </>
   );
 };
