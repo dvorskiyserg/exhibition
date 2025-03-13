@@ -19,7 +19,7 @@ import Footer from "./components/Footer";
 import DashboardPage from "./components/admin/DashboardPage";
 import UsersPage from "./components/admin/UsersPage";
 import NewsPage from "./components/admin/NewsPage";
-
+import { BrowserRouter as Router } from "react-router-dom";
 // import { Button, Container, Header as RSHeader, Content, Footer } from "rsuite";
 
 const queryClient = new QueryClient();
@@ -27,7 +27,7 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
+      <Router basename="/exhibition-public">
         <AuthProvider>
           <Header />
           <div className="pt-16">
