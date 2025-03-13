@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/dvorskiyserg/exhibition-public",
+  "homepage": "https://dvorskiyserg.github.io/exhibition",
   "dependencies": {
     "@rsuite/icons": "^1.3.0",
     "@tailwindcss/cli": "^4.0.7",

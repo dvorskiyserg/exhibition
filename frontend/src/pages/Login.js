@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { Form, Button, Panel, FlexboxGrid, Message } from "rsuite";
 import PageTitle from "../components/PageTitle";
-import bgImage from "../assets/header-bg.jpg"; // додай потрібну картинку в assets
+import bgImage from "../assets/header-bg.jpg";
 
 const Login = () => {
   const [identifier, setIdentifier] = useState("");
@@ -32,7 +32,7 @@ const Login = () => {
       <PageTitle title="Сторінка учасника" backgroundImage={bgImage} />
       <FlexboxGrid
         justify="center"
-        style={{ marginTop: "120px", marginBottom: "80px" }}
+        style={{ marginTop: "120px", marginBottom: "100px" }}
       >
         <FlexboxGrid.Item
           colspan={24}
@@ -63,6 +63,7 @@ const Login = () => {
               </Form.Group>
               <Form.Group>
                 <Button
+                  className="loginButton"
                   appearance="primary"
                   block
                   onClick={handleLogin}

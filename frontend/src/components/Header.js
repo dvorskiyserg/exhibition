@@ -76,7 +76,7 @@ const Header = () => {
         }}
       >
         <a
-          href="https://www.instagram.com/your_instagram_profile"
+          href="https://www.instagram.com/makoshethno.oficial/"
           target="_blank"
           rel="noopener noreferrer"
           className="insta-icon"

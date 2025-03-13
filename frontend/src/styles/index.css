@@ -172,6 +172,12 @@ body {
   text-decoration: underline;
 }
 
+.loginButton {
+  margin-top: 10px;
+  margin-bottom: 20px !important;
+
+}
+
 /* Загальний контейнер форми */
 .register-container, .login-container {
   display: flex;
@@ -413,4 +419,28 @@ body {
   cursor: pointer;
   font-size: 16pt;
   margin-top: 5px;
+}
+
+.order-invitation-section {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+
+@media (min-width: 640px) {
+  .order-invitation-section {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .order-invitation-section {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+  }
+}
+
+.order-invitation-section h2 {
+  line-height: 25px;
+  font-weight: 300;
 }

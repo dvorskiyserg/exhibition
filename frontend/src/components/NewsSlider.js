@@ -11,28 +11,28 @@ const newsItems = [
     id: 1,
     title: "Матеріали українського виробництва",
     description: "Сучасні будівельні матеріали та дизайн.",
-    image: "/news/news1.jpg",
+    image: `${process.env.PUBLIC_URL}/news/news1.jpg`,
     link: "#",
   },
   {
     id: 2,
     title: "Марафон проектів 2025",
     description: "Будуємо майбутнє разом.",
-    image: "/news/news2.jpg",
+    image: `${process.env.PUBLIC_URL}/news/news2.jpg`,
     link: "#",
   },
   {
     id: 3,
     title: "Архітектурна кераміка",
     description: "Традиція, яка стає світовим трендом.",
-    image: "/news/news3.jpg",
+    image: `${process.env.PUBLIC_URL}/news/news3.jpg`,
     link: "#",
   },
   {
     id: 4,
     title: "Архітектурна кераміка",
     description: "Традиція, яка стає світовим трендом.",
-    image: "/news/news4.jpg",
+    image: `${process.env.PUBLIC_URL}/news/news4.jpg`,
     link: "#",
   },
 ];
@@ -66,7 +66,7 @@ const NewsSlider = () => {
                   style={{ width: "100%", height: "160px", objectFit: "cover" }}
                 />
                 <Card.Body>
-                  <h5>{news.title}</h5>
+                  <h5 style={{ marginBottom: "5px" }}>{news.title}</h5>
                   <p>{news.description}</p>
                   <a href={news.link} style={{ color: "#f90" }}>
                     Детальніше &gt;

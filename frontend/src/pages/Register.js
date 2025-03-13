@@ -3,6 +3,8 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { Form, Button, Panel, FlexboxGrid, Message } from "rsuite";
+import bgImage from "../assets/header-bg.jpg";
+import PageTitle from "../components/PageTitle";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -28,55 +30,66 @@ const Register = () => {
   };
 
   return (
-    <FlexboxGrid justify="center" style={{ marginTop: "90px" }}>
-      <FlexboxGrid.Item
-        colspan={12}
-        style={{
-          maxWidth: "400px", // Максимальна ширина для великих екранів
-          width: "90%", // Адаптивно займає 90% ширини на мобільних
-        }}
+    <>
+      <PageTitle title="Реєстрація учасника" backgroundImage={bgImage} />
+      <FlexboxGrid
+        justify="center"
+        style={{ marginTop: "90px", marginBottom: "100px" }}
       >
-        <Panel header={<h3>Реєстрація</h3>} bordered>
-          {error && <Message type="error">{error}</Message>}
-          <Form fluid>
-            <Form.Group>
-              <Form.ControlLabel>Логін</Form.ControlLabel>
-              <Form.Control
-                name="username"
-                onChange={setUsername}
-                value={username}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.ControlLabel>Email</Form.ControlLabel>
-              <Form.Control
-                name="email"
-                type="email"
-                onChange={setEmail}
-                value={email}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.ControlLabel>Пароль</Form.ControlLabel>
-              <Form.Control
-                name="password"
-                type="password"
-                onChange={setPassword}
-                value={password}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Button appearance="primary" block onClick={handleRegister}>
-                Зареєструватися
-              </Button>
-            </Form.Group>
-          </Form>
-          <p>
-            Вже маєте акаунт? <Link to="/login">Увійти</Link>
-          </p>
-        </Panel>
-      </FlexboxGrid.Item>
-    </FlexboxGrid>
+        <FlexboxGrid.Item
+          colspan={12}
+          style={{
+            maxWidth: "400px", // Максимальна ширина для великих екранів
+            width: "90%", // Адаптивно займає 90% ширини на мобільних
+          }}
+        >
+          <Panel header={<h3>Реєстрація</h3>} bordered>
+            {error && <Message type="error">{error}</Message>}
+            <Form fluid>
+              <Form.Group>
+                <Form.ControlLabel>Логін</Form.ControlLabel>
+                <Form.Control
+                  name="username"
+                  onChange={setUsername}
+                  value={username}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.ControlLabel>Email</Form.ControlLabel>
+                <Form.Control
+                  name="email"
+                  type="email"
+                  onChange={setEmail}
+                  value={email}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.ControlLabel>Пароль</Form.ControlLabel>
+                <Form.Control
+                  name="password"
+                  type="password"
+                  onChange={setPassword}
+                  value={password}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Button
+                  className="loginButton"
+                  appearance="primary"
+                  block
+                  onClick={handleRegister}
+                >
+                  Зареєструватися
+                </Button>
+              </Form.Group>
+            </Form>
+            <p>
+              Вже маєте акаунт? <Link to="/login">Увійти</Link>
+            </p>
+          </Panel>
+        </FlexboxGrid.Item>
+      </FlexboxGrid>
+    </>
   );
 };
 
