@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/dvorskiyserg/exhibition-public/static/css/main.3bca25f7.css",
-    "main.js": "/dvorskiyserg/exhibition-public/static/js/main.51771342.js",
+    "main.js": "/dvorskiyserg/exhibition-public/static/js/main.a1bf5410.js",
     "static/js/453.d855a71b.chunk.js": "/dvorskiyserg/exhibition-public/static/js/453.d855a71b.chunk.js",
     "static/media/2.jpg": "/dvorskiyserg/exhibition-public/static/media/2.a7c010772799c9d15b6c.jpg",
     "static/media/1.jpg": "/dvorskiyserg/exhibition-public/static/media/1.6f64768704b04193f0b0.jpg",
@@ -12,11 +12,11 @@
     "static/media/logo.png": "/dvorskiyserg/exhibition-public/static/media/logo.3457d5040061cf61acfb.png",
     "index.html": "/dvorskiyserg/exhibition-public/index.html",
     "main.3bca25f7.css.map": "/dvorskiyserg/exhibition-public/static/css/main.3bca25f7.css.map",
-    "main.51771342.js.map": "/dvorskiyserg/exhibition-public/static/js/main.51771342.js.map",
+    "main.a1bf5410.js.map": "/dvorskiyserg/exhibition-public/static/js/main.a1bf5410.js.map",
     "453.d855a71b.chunk.js.map": "/dvorskiyserg/exhibition-public/static/js/453.d855a71b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.3bca25f7.css",
-    "static/js/main.51771342.js"
+    "static/js/main.a1bf5410.js"
   ]
 }
