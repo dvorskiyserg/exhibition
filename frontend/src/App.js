@@ -1,14 +1,7 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Link,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./context/AuthContext";
-// import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -19,25 +12,19 @@ import Footer from "./components/Footer";
 import DashboardPage from "./components/admin/DashboardPage";
 import UsersPage from "./components/admin/UsersPage";
 import NewsPage from "./components/admin/NewsPage";
-import { BrowserRouter as Router } from "react-router-dom";
-// import { Button, Container, Header as RSHeader, Content, Footer } from "rsuite";
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router basename="/exhibition-public">
+      <Router>
         <AuthProvider>
           <Header />
           <div className="pt-16">
-            <div className="container mx-auto p-6 ">
+            <div className="container mx-auto p-6">
               <Routes>
-                <Route
-                  path="/"
-                  CassName="container mx-auto"
-                  element={<Home />}
-                />
+                <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route
@@ -54,9 +41,9 @@ function App() {
               </Routes>
             </div>
           </div>
+          <Footer />
         </AuthProvider>
       </Router>
-      <Footer />
     </QueryClientProvider>
   );
 }

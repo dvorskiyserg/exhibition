@@ -14,9 +14,9 @@ const PageTitle = ({ title, backgroundImage }) => {
         justifyContent: "center",
         color: "#ffffff",
         fontSize: "24px",
-        fontWeight: "bold",
+        fontWeight: "100",
         textTransform: "uppercase",
-        letterSpacing: "2px",
+        letterSpacing: "0px",
       }}
     >
       {title}

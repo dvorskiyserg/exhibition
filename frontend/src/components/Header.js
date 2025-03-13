@@ -126,19 +126,19 @@ const Header = () => {
         ) : (
           <Nav className="desktop-nav">
             <Nav.Item as={Link} to="/">
-              Головна
+              Про нас
             </Nav.Item>
-            <Nav.Item as={Link} to="/admin/dashboard">
+            <Nav.Item as={Link} to="/">
               Виставки
             </Nav.Item>
             <Nav.Item as={Link} to="/profile">
               Учасникам
             </Nav.Item>
-            <Nav.Item as={Link} to="/profile">
+            <Nav.Item as={Link} to="/">
               Відвідувачам
             </Nav.Item>
-            <Nav.Item as={Link} to="/profile">
-              Про нас
+            <Nav.Item as={Link} to="/">
+              Контакти
             </Nav.Item>
           </Nav>
         )}
