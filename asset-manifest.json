@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/dvorskiyserg/exhibition-public/static/css/main.3bca25f7.css",
+    "main.js": "/dvorskiyserg/exhibition-public/static/js/main.d90d8919.js",
+    "static/js/453.d855a71b.chunk.js": "/dvorskiyserg/exhibition-public/static/js/453.d855a71b.chunk.js",
+    "static/media/2.jpg": "/dvorskiyserg/exhibition-public/static/media/2.a7c010772799c9d15b6c.jpg",
+    "static/media/1.jpg": "/dvorskiyserg/exhibition-public/static/media/1.6f64768704b04193f0b0.jpg",
+    "static/media/4.jpg": "/dvorskiyserg/exhibition-public/static/media/4.1191439b37443b61edff.jpg",
+    "static/media/3.jpg": "/dvorskiyserg/exhibition-public/static/media/3.aaab457c3adeac8599f4.jpg",
+    "static/media/makosh_logo_circle.png": "/dvorskiyserg/exhibition-public/static/media/makosh_logo_circle.abae178ad8ae0eb416c4.png",
+    "static/media/header-bg.jpg": "/dvorskiyserg/exhibition-public/static/media/header-bg.bb88ccce6493f9a2bcb9.jpg",
+    "static/media/logo.png": "/dvorskiyserg/exhibition-public/static/media/logo.3457d5040061cf61acfb.png",
+    "index.html": "/dvorskiyserg/exhibition-public/index.html",
+    "main.3bca25f7.css.map": "/dvorskiyserg/exhibition-public/static/css/main.3bca25f7.css.map",
+    "main.d90d8919.js.map": "/dvorskiyserg/exhibition-public/static/js/main.d90d8919.js.map",
+    "453.d855a71b.chunk.js.map": "/dvorskiyserg/exhibition-public/static/js/453.d855a71b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3bca25f7.css",
+    "static/js/main.d90d8919.js"
+  ]
+}
