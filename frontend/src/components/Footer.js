@@ -5,8 +5,8 @@ import logo from "../assets/logo.png"; // Лого виставки
 
 const Footer = () => {
   return (
-    <footer className="footer">
-      <div className="footer-top">
+    <footer className="footer mx-auto p-6 px-4">
+      <div className="footer-top mx-auto p-6 px-4">
         <div className="footer-info">
           <img src={logo} alt="InterBuildExpo" className="footer-logo" />
           <p>
