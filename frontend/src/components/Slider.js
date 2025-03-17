@@ -9,7 +9,7 @@ import "../styles/slider.css";
 import img1 from "../assets/slider/1.jpg";
 import img2 from "../assets/slider/2.jpg";
 import img3 from "../assets/slider/3.jpg";
-import img4 from "../assets/slider/4.jpg";
+// import img4 from "../assets/slider/4.jpg";
 import logoCircle from "../assets/slider/makosh_logo_circle.png";
 
 // Масив зображень
@@ -17,8 +17,7 @@ const slides = [
   { type: "image", src: img1 },
   { type: "image", src: img2 },
   // { type: "video", src: "/assets/video/promo-video.mp4" }, // Шлях до відео
-  // { type: "image", src: img3 },
-  { type: "image", src: img4 },
+  { type: "image", src: img3 },
 ];
 
 const Slider = () => {

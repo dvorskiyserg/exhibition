@@ -13,12 +13,15 @@ import DashboardPage from "./components/admin/DashboardPage";
 import UsersPage from "./components/admin/UsersPage";
 import NewsPage from "./components/admin/NewsPage";
 
+// Визначаємо `basename` залежно від середовища
+const basename = process.env.NODE_ENV === "production" ? "/exhibition" : "/";
+
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router basename="/exhibition">
+      <Router basename={basename}>
         <AuthProvider>
           <Header />
           <div className="pt-16">
