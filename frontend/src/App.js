@@ -18,7 +18,7 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
+      <Router basename="/exhibition">
         <AuthProvider>
           <Header />
           <div className="pt-16">
