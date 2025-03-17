@@ -17,7 +17,7 @@ const slides = [
   { type: "image", src: img1 },
   { type: "image", src: img2 },
   // { type: "video", src: "/assets/video/promo-video.mp4" }, // Шлях до відео
-  { type: "image", src: img3 },
+  // { type: "image", src: img3 },
   { type: "image", src: img4 },
 ];
 

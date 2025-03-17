@@ -1,32 +1,29 @@
 import React from "react";
 import { Button } from "rsuite";
 import "../styles/footer.css"; // Додай стилі сюди
-import logo from "../assets/logo.png"; // Лого виставки
+import logo from "../assets/logo-mini.png"; // Лого виставки
 
 const Footer = () => {
   return (
-    <footer className="footer">
-      <div className="footer-top">
+    <footer className="footer mx-auto p-6 px-4">
+      <div className="footer-top mx-auto p-6 px-4">
         <div className="footer-info">
           <img src={logo} alt="InterBuildExpo" className="footer-logo" />
           <p>
-            GENERAL ORGANIZER:{" "}
-            <strong>KYIV INTERNATIONAL CONTRACT FAIR, LTD.</strong>
+            GENERAL ORGANIZER: <strong>MAKOSH ETHNO GROUP, LTD.</strong>
           </p>
           <p>
             Тел./факс: <br />
-            +38 044 490 62 20 <br />
-            +38 044 490 62 21
+            +38 063 26 25 265 <br />
+            +38 067 46 12 197
           </p>
           <p>
-            E-mail: <a href="mailto:build@kmkya.kiev.ua">build@kmkya.kiev.ua</a>
+            E-mail: <a href="mailto:">info@makosh-ethno.com</a>
           </p>
           <p>
-            Фактична адреса:
+            Адреса:
             <br />
-            Україна, м.Київ, вул. Багговутівська, 17-21, 4 поверх
-            <br />
-            Поштова адреса: Україна, м.Київ, а/с В-13 01001
+            Україна, м.Київ, вул. Хрещатик, 44а
           </p>
           <div className="social-icons">
             <a href="#">
