@@ -23,8 +23,6 @@ export const AuthProvider = ({ children }) => {
       });
 
       const jwt = res.data.jwt;
-
-      // Запитуємо додаткову інформацію (роль)
       const userResponse = await axios.get(
         "http://localhost:1337/api/users/me?populate=role",
         {
@@ -33,13 +31,17 @@ export const AuthProvider = ({ children }) => {
       );
 
       const userData = {
-        jwt,
+        id: userResponse.data.id, // Важливо передати ID
+        email: userResponse.data.email,
+        username: userResponse.data.username,
         role: userResponse.data.role?.name.toLowerCase() || "authenticated",
+        jwt,
       };
 
       console.log("User після логіну:", userData);
+
       setUser(userData);
-      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("user", JSON.stringify(userData)); // Оновлюємо localStorage
     } catch (error) {
       console.error("Помилка логіну:", error);
       throw error;

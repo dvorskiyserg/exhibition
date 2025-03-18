@@ -65,35 +65,61 @@
       "inversedBy": "users",
       "configurable": false
     },
-    "company": {
+    "user_status": {
+      "type": "enumeration",
+      "enum": [
+        "candidate",
+        "participant"
+      ]
+    },
+    "organization": {
       "type": "string"
-    },
-    "position": {
-      "type": "string"
-    },
-    "firstName": {
-      "type": "string",
-      "required": true
-    },
-    "lastName": {
-      "type": "string"
-    },
-    "country": {
-      "type": "string"
-    },
-    "region": {
-      "type": "string"
-    },
-    "address": {
-      "type": "string"
-    },
-    "phone": {
-      "required": true,
-      "max": "15",
-      "type": "biginteger"
     },
     "website": {
       "type": "string"
+    },
+    "fullname": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "photo": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "exhibitions": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "user_exhibitions"
+    },
+    "user_exhibitions": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "exhibitions"
+    },
+    "equipment": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "user_equipment"
+    },
+    "user_equipment": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "equipment"
     }
   }
 }

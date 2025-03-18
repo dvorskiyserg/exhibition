@@ -269,9 +269,10 @@ body {
   right: -10px !important;
 }
 
-/* .rs-icon {
-  font-size: 18px !important;
-} */
+.rs-icon {
+  /* font-size: 18px !important; */
+  color: white !important;
+}
 
 .LoginLink {
   color: #fff !important;

@@ -1,61 +1,147 @@
-import React, { useState } from "react";
-import { Container, Panel, Form, Button, Message, ButtonToolbar } from "rsuite";
-import { useAuth } from "../context/AuthContext"; // Додаємо хук для виходу
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Panel,
+  Form,
+  Button,
+  Message,
+  ButtonToolbar,
+  Avatar,
+} from "rsuite";
+import { useAuth } from "../context/AuthContext";
 
-const Profile = ({ user, jwt }) => {
-  const [formValue, setFormValue] = useState(user);
+const Profile = () => {
+  const { user, jwt, logout } = useAuth(); // Беремо користувача та JWT токен із контексту
+  const [formValue, setFormValue] = useState(user || {}); // Запобігаємо `undefined`
   const [message, setMessage] = useState("");
 
-  const { logout } = useAuth(); // Отримуємо функцію виходу
+  useEffect(() => {
+    if (user) {
+      setFormValue(user);
+      console.log("Профільний user:", user);
+    }
+  }, [user]);
 
   const handleSave = async () => {
+    if (!user || !user.id) {
+      console.error("User ID не знайдено", user);
+      return;
+    }
+
+    console.log(
+      "Відправляю запит до:",
+      `http://localhost:1337/api/users/${user.id}`
+    );
+    console.log("Дані для оновлення:", formValue);
+    console.log("JWT Token:", user.jwt);
+
     try {
       const response = await fetch(
-        `http://localhost:1337/api/users/${user.id}`,
+        `http://localhost:1337/api/users/${user.id}`, // Використовуємо ID
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${jwt}`,
+            Authorization: `Bearer ${user.jwt}`, // Передаємо токен
           },
           body: JSON.stringify(formValue),
         }
       );
 
-      if (!response.ok) throw new Error("Не вдалося зберегти профіль");
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Помилка відповіді сервера:", errorData);
+        throw new Error("Не вдалося зберегти профіль");
+      }
 
       setMessage("Дані успішно збережено!");
     } catch (error) {
-      setMessage(error.message);
+      console.error("Помилка збереження профілю:", error);
+      setMessage("Не вдалося зберегти профіль");
     }
   };
 
   const handleLogout = () => {
-    logout(); // Очищення локального збереження і стану
-    window.location.href = "/"; // Повернення на головну сторінку після виходу
+    logout();
+    window.location.href = "/";
   };
 
+  if (!user) {
+    return (
+      <Container>
+        <Panel header="Мій профіль" bordered>
+          <Message type="info">Завантаження...</Message>
+        </Panel>
+      </Container>
+    );
+  }
+
   return (
-    <Container>
-      <Panel header="Мій профіль" bordered>
+    <Container style={{ maxWidth: "100%", padding: "20px" }}>
+      <Panel header="Мій профіль" bordered style={{ width: "100%" }}>
         {message && (
           <Message showIcon type="info">
             {message}
           </Message>
         )}
-        <Form fluid formValue={formValue} onChange={setFormValue}>
+
+        {/* Аватар */}
+        {user.photo && (
+          <div style={{ textAlign: "center", marginBottom: "20px" }}>
+            <Avatar
+              circle
+              size="lg"
+              src={`http://localhost:1337${user.photo.url}`}
+              alt="Аватар"
+            />
+          </div>
+        )}
+
+        <Form
+          fluid
+          formValue={formValue}
+          onChange={setFormValue}
+          style={{ width: "100%" }}
+        >
           <Form.Group>
-            <Form.ControlLabel>Ім'я</Form.ControlLabel>
-            <Form.Control name="firstName" />
+            <Form.ControlLabel>Повне ім'я</Form.ControlLabel>
+            <Form.Control name="fullname" />
           </Form.Group>
           <Form.Group>
-            <Form.ControlLabel>Прізвище</Form.ControlLabel>
-            <Form.Control name="lastName" />
+            <Form.ControlLabel>Організація</Form.ControlLabel>
+            <Form.Control name="organization" />
           </Form.Group>
           <Form.Group>
-            <Form.ControlLabel>Компанія</Form.ControlLabel>
-            <Form.Control name="company" />
+            <Form.ControlLabel>Вебсайт</Form.ControlLabel>
+            <Form.Control name="website" />
           </Form.Group>
+          <Form.Group>
+            <Form.ControlLabel>Телефон</Form.ControlLabel>
+            <Form.Control name="phone" />
+          </Form.Group>
+          <Form.Group>
+            <Form.ControlLabel>Опис діяльності</Form.ControlLabel>
+            <Form.Control
+              name="description"
+              componentClass="textarea"
+              rows={3}
+            />
+          </Form.Group>
+
+          {/* Статус користувача */}
+          <Form.Group>
+            <Form.ControlLabel>Статус</Form.ControlLabel>
+            <p
+              style={{
+                fontWeight: "bold",
+                fontSize: "16px",
+                color: user.user_status === "Учасник" ? "green" : "gray",
+              }}
+            >
+              {user.user_status || "Кандидат"}
+            </p>
+          </Form.Group>
+
           <ButtonToolbar>
             <Button appearance="primary" onClick={handleSave}>
               Зберегти
