@@ -28,23 +28,32 @@ const Profile = () => {
       return;
     }
 
+    const updateData = {
+      fullname: formValue.fullname,
+      organization: formValue.organization,
+      website: formValue.website,
+      phone: formValue.phone,
+      description: formValue.description,
+      user_status: formValue.user_status,
+    };
+
     console.log(
       "Відправляю запит до:",
       `http://localhost:1337/api/users/${user.id}`
     );
-    console.log("Дані для оновлення:", formValue);
+    console.log("Дані для оновлення:", updateData);
     console.log("JWT Token:", user.jwt);
 
     try {
       const response = await fetch(
-        `http://localhost:1337/api/users/${user.id}`, // Використовуємо ID
+        `http://localhost:1337/api/users/${user.id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${user.jwt}`, // Передаємо токен
+            Authorization: `Bearer ${user.jwt}`,
           },
-          body: JSON.stringify(formValue),
+          body: JSON.stringify(updateData),
         }
       );
 
