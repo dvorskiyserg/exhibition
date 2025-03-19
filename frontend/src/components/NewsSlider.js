@@ -1,5 +1,5 @@
 import React from "react";
-import { Card } from "rsuite";
+import { Card, Button } from "rsuite";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -78,9 +78,9 @@ const NewsSlider = () => {
         </Swiper>
 
         <div style={{ marginTop: "20px" }}>
-          <a href="#all-news" className="rs-btn rs-btn-primary news-btn">
+          <Button href="#all-news" appearance="primary" className="form-button">
             Всі новини
-          </a>
+          </Button>
         </div>
       </div>
     </div>

@@ -128,6 +128,9 @@ const Header = () => {
             <Nav.Item as={Link} to="/">
               Про нас
             </Nav.Item>
+            <Nav.Item as={Link} to="/gallery">
+              Галерея
+            </Nav.Item>
             <Nav.Item as={Link} to="/">
               Виставки
             </Nav.Item>
@@ -137,7 +140,7 @@ const Header = () => {
             <Nav.Item as={Link} to="/">
               Відвідувачам
             </Nav.Item>
-            <Nav.Item as={Link} to="/">
+            <Nav.Item as={Link} to="/contacts ">
               Контакти
             </Nav.Item>
           </Nav>
@@ -169,6 +172,13 @@ const Header = () => {
                 onClick={() => setIsOpen(false)}
               >
                 Виставки
+              </Nav.Item>
+              <Nav.Item
+                as={Link}
+                to="/gallery"
+                onClick={() => setIsOpen(false)}
+              >
+                Галерея
               </Nav.Item>
               <Nav.Item
                 as={Link}

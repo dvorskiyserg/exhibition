@@ -1,51 +1,86 @@
-import React from "react";
-import { Container, FlexboxGrid, Panel } from "rsuite";
-import PageTitle from "../components/PageTitle"; // Компонент для смужки заголовку
-import bgImage from "../assets/header-bg.jpg"; // Фонове зображення
-// import img1 from "../assets/gallery/img1.jpg"; // Приклади фото
-// import img2 from "../assets/gallery/img2.jpg";
-// import img3 from "../assets/gallery/img3.jpg";
+import React, { useState } from "react";
+import { SelectPicker, Panel, Container, FlexboxGrid } from "rsuite";
+import ImageGallery from "react-image-gallery";
+import PageTitle from "../components/PageTitle";
+import bgImage from "../assets/header-bg.jpg";
+import "react-image-gallery/styles/css/image-gallery.css";
+import "../styles/index.css";
+
+// Базовий шлях для GH Pages (якщо використовується)
+const basePath = process.env.PUBLIC_URL + "/gallery";
+
+// Список виставок із фото
+const exhibitions = [
+  {
+    id: 1,
+    name: "Виставка 2023",
+    images: [
+      {
+        original: `${basePath}/exhibition1/img1.jpg`,
+        thumbnail: `${basePath}/exhibition1/img1.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition1/img2.jpg`,
+        thumbnail: `${basePath}/exhibition1/img2.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition1/img3.jpg`,
+        thumbnail: `${basePath}/exhibition1/img3.jpg`,
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "Виставка 2024",
+    images: [
+      {
+        original: `${basePath}/exhibition2/img1.jpg`,
+        thumbnail: `${basePath}/exhibition2/img1.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition2/img2.jpg`,
+        thumbnail: `${basePath}/exhibition2/img2.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition2/img3.jpg`,
+        thumbnail: `${basePath}/exhibition2/img3.jpg`,
+      },
+    ],
+  },
+];
 
 const Gallery = () => {
-  const images = [
-    `${process.env.PUBLIC_URL}/gallery/img1.jpg`,
-    `${process.env.PUBLIC_URL}/gallery/img2.jpg`,
-    `${process.env.PUBLIC_URL}/gallery/img3.jpg`,
-  ];
+  const [selectedExhibition, setSelectedExhibition] = useState(exhibitions[0]);
+
+  const handleExhibitionChange = (value) => {
+    const exhibition = exhibitions.find((ex) => ex.id === value);
+    setSelectedExhibition(exhibition);
+  };
 
   return (
-    <>
-      <PageTitle title="Галерея" backgroundImage={bgImage} />
-      <FlexboxGrid
-        justify="center"
-        style={{ marginTop: "120px", marginBottom: "100px" }}
-      >
-        <Container style={{ maxWidth: "1000px" }}>
-          <Panel bordered style={{ padding: "30px" }}>
-            <h3>Наші роботи</h3>
-            <FlexboxGrid
-              justify="center"
-              style={{ marginTop: "20px" }}
-              gutter={20}
-            >
-              {images.map((src, index) => (
-                <FlexboxGrid.Item
-                  key={index}
-                  colspan={8}
-                  style={{ textAlign: "center" }}
-                >
-                  <img
-                    src={src}
-                    alt={`gallery-${index}`}
-                    style={{ width: "100%", borderRadius: "10px" }}
-                  />
-                </FlexboxGrid.Item>
-              ))}
-            </FlexboxGrid>
-          </Panel>
-        </Container>
-      </FlexboxGrid>
-    </>
+    <Container>
+      <PageTitle title="Сторінка учасника" backgroundImage={bgImage} />
+      <FlexboxGrid justify="center"></FlexboxGrid>
+      <Panel>
+        {/* Вибір виставки */}
+        <SelectPicker
+          data={exhibitions.map((ex) => ({ label: ex.name, value: ex.id }))}
+          onChange={handleExhibitionChange}
+          defaultValue={selectedExhibition.id}
+          searchable={false}
+          style={{ width: 300, marginBottom: "20px" }}
+        />
+
+        {/* Відображення фото */}
+        <ImageGallery
+          items={selectedExhibition.images}
+          showPlayButton={true} // Кнопка слайд-шоу
+          showFullscreenButton={true} // Кнопка повноекранного режиму
+          showThumbnails={true} // Мініатюри зображень
+          slideInterval={3000} // Автоматичне переключення фото
+        />
+      </Panel>
+    </Container>
   );
 };
 

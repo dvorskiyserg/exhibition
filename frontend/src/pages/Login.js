@@ -45,7 +45,7 @@ const Login = () => {
             {error && <Message type="error">{error}</Message>}
             <Form fluid>
               <Form.Group>
-                <Form.ControlLabel>Email або Логін</Form.ControlLabel>
+                <Form.ControlLabel>Email</Form.ControlLabel>
                 <Form.Control
                   name="identifier"
                   onChange={setIdentifier}

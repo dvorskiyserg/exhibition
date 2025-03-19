@@ -1,6 +1,8 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { Button } from "rsuite";
+
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -61,8 +63,8 @@ const Slider = () => {
               />
               <h2 className="slider-title"></h2>
               <div className="slider-buttons">
-                <button className="order-btn">ЗАМОВИТИ УЧАСТЬ</button>
-                <button className="visit-btn">ВІДВІДАТИ ВИСТАВКУ </button>
+                <Button className="order-btn">ЗАМОВИТИ УЧАСТЬ</Button>
+                <Button className="visit-btn">ВІДВІДАТИ ВИСТАВКУ </Button>
               </div>
             </div>
           </div>

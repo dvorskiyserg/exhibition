@@ -276,7 +276,7 @@ body {
 
 .LoginLink {
   color: #fff !important;
-  margin-top: 4px;
+  margin-top: 7px;
 }
 
 .main-slider {
@@ -340,24 +340,30 @@ body {
   justify-content: center;
 }
 
-.order-btn,
-.visit-btn {
-  background-color: var(--btn-color);
+.order-btn {
+  background-color: var(--btn-color) !important;
   color: #fff !important;
-  font-weight: bold;
+  font-weight: bold !important;
   border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 60vh;
+  padding: 10px 20px !important;
+  font-size: 16px !important;
+  cursor: pointer !important;
+  border-radius: 60vh !important;
 }
 
 .visit-btn {
   background-color: var(--primary-color) !important;
+  color: #fff !important;
+  font-weight: bold !important;
+  border: none;
+  padding: 10px 20px !important;
+  font-size: 16px !important;
+  cursor: pointer !important;
+  border-radius: 60vh !important;
 }
 
 .order-btn:hover {
-  background-color: var(--btn-hover-primary);
+  background-color: var(--btn-hover-primary) !important;
 }
 
 .visit-btn:hover {
@@ -382,7 +388,7 @@ body {
 
 .rs-btn {
   border-radius: 60vh !important;
-  background-color: var(--secondary-color) !important;
+  background-color: var(--secondary-color);
 }
 
 .news-btn {
@@ -445,4 +451,10 @@ body {
 .order-invitation-section h2 {
   line-height: 25px;
   font-weight: 300;
+}
+
+/* GALLERY styles */
+
+.image-gallery-content:not(.fullscreen) .image-gallery-slide .image-gallery-image {
+  max-height: calc(60vh - 80px);
 }
