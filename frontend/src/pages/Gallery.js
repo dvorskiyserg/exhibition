@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { SelectPicker, Panel, Container, FlexboxGrid } from "rsuite";
+import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import ImageGallery from "react-image-gallery";
 import PageTitle from "../components/PageTitle";
 import bgImage from "../assets/header-bg.jpg";
@@ -27,6 +28,34 @@ const exhibitions = [
         original: `${basePath}/exhibition1/img3.jpg`,
         thumbnail: `${basePath}/exhibition1/img3.jpg`,
       },
+      {
+        original: `${basePath}/exhibition1/img4.jpg`,
+        thumbnail: `${basePath}/exhibition1/img4.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition1/img5.jpg`,
+        thumbnail: `${basePath}/exhibition1/img5.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition1/img6.jpg`,
+        thumbnail: `${basePath}/exhibition1/img6.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition1/img7.jpg`,
+        thumbnail: `${basePath}/exhibition1/img7.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition1/img8.jpg`,
+        thumbnail: `${basePath}/exhibition1/img8.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition1/img9.jpg`,
+        thumbnail: `${basePath}/exhibition1/img9.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition1/img10.jpg`,
+        thumbnail: `${basePath}/exhibition1/img10.jpg`,
+      },
     ],
   },
   {
@@ -44,6 +73,26 @@ const exhibitions = [
       {
         original: `${basePath}/exhibition2/img3.jpg`,
         thumbnail: `${basePath}/exhibition2/img3.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition2/img4.jpg`,
+        thumbnail: `${basePath}/exhibition2/img4.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition2/img5.jpg`,
+        thumbnail: `${basePath}/exhibition2/img5.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition2/img6.jpg`,
+        thumbnail: `${basePath}/exhibition2/img6.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition2/img7.jpg`,
+        thumbnail: `${basePath}/exhibition2/img7.jpg`,
+      },
+      {
+        original: `${basePath}/exhibition2/img8.jpg`,
+        thumbnail: `${basePath}/exhibition2/img8.jpg`,
       },
     ],
   },
