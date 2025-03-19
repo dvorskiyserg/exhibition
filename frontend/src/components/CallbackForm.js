@@ -62,10 +62,18 @@ const CallbackForm = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={handleSubmit} appearance="primary">
+          <Button
+            className="first-btn"
+            onClick={handleSubmit}
+            appearance="primary"
+          >
             Відправити
           </Button>
-          <Button onClick={handleClose} appearance="subtle">
+          <Button
+            className="second-btn"
+            onClick={handleClose}
+            appearance="subtle"
+          >
             Скасувати
           </Button>
         </Modal.Footer>

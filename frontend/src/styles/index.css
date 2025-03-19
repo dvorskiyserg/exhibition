@@ -340,7 +340,7 @@ body {
   justify-content: center;
 }
 
-.order-btn {
+.order-btn, .first-btn {
   background-color: var(--btn-color) !important;
   color: #fff !important;
   font-weight: bold !important;
@@ -351,7 +351,7 @@ body {
   border-radius: 60vh !important;
 }
 
-.visit-btn {
+.visit-btn, .second-btn {
   background-color: var(--primary-color) !important;
   color: #fff !important;
   font-weight: bold !important;
@@ -362,11 +362,11 @@ body {
   border-radius: 60vh !important;
 }
 
-.order-btn:hover {
+.order-btn:hover, .first-btn:hover {
   background-color: var(--btn-hover-primary) !important;
 }
 
-.visit-btn:hover {
+.visit-btn:hover, .second-btn:hover {
   background-color: var(--btn-hover-secondary) !important;
 
 }
@@ -459,5 +459,8 @@ body {
   max-height: calc(60vh - 80px);
 }
 
-/* Callback FORM */
+/* Callback FORM modal*/
 
+.rs-modal {
+  margin: 160px auto 0;
+}
