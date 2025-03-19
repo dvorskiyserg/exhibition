@@ -118,6 +118,18 @@ const Gallery = () => {
           defaultValue={selectedExhibition.id}
           searchable={false}
           style={{ width: 300, marginBottom: "20px" }}
+          renderMenuItem={(label, item) => (
+            <div style={{ display: "flex", alignItems: "center" }}>{label}</div>
+          )}
+          renderValue={(value, item) => (
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {item.label}
+              <ArrowDownLineIcon
+                className="arrow-down-icon"
+                style={{ marginLeft: 8 }}
+              />
+            </div>
+          )}
         />
 
         {/* Відображення фото */}

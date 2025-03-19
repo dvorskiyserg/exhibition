@@ -338,6 +338,20 @@ body {
   display: flex;
   gap: 15px;
   justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .slider-buttons {
+    flex-direction: column; /* Встановлюємо вертикальне розташування */
+    gap: 15px; /* Відступ між кнопками */
+  }
+
+  .order-btn,
+  .visit-btn {
+    width: 95%; /* Робимо кнопки ширшими */
+    text-align: center;
+  }
 }
 
 .order-btn, .first-btn {
@@ -459,8 +473,20 @@ body {
   max-height: calc(60vh - 80px);
 }
 
+.arrow-down-icon {
+  color: var(--background-menu-color) !important;
+  width: 2em;
+  height: 1.3em;
+}
+
+.gallery-picker {
+  font-size: 15px;
+  border-color: var(--btn-color) !important;
+}
+
 /* Callback FORM modal*/
 
 .rs-modal {
   margin: 160px auto 0 !important;
 }
+

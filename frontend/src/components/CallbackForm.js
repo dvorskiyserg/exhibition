@@ -31,7 +31,7 @@ const CallbackForm = () => {
           className="form-button"
           onClick={handleOpen}
         >
-          ЗВОРОТНИЙ ЗВ'ЯЗОК →
+          ЗВОРОТНИЙ ЗВ'ЯЗОК
         </Button>
       </div>
 
