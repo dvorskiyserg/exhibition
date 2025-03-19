@@ -61,8 +61,8 @@ const Slider = () => {
               />
               <h2 className="slider-title"></h2>
               <div className="slider-buttons">
-                <button className="order-btn">ORDER PARTICIPATION</button>
-                <button className="visit-btn">VISIT THE EXHIBITION</button>
+                <button className="order-btn">ЗАМОВИТИ УЧАСТЬ</button>
+                <button className="visit-btn">ВІДВІДАТИ ВИСТАВКУ </button>
               </div>
             </div>
           </div>

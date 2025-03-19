@@ -7,18 +7,27 @@ import {
   Message,
   ButtonToolbar,
   Avatar,
+  Input,
 } from "rsuite";
 import { useAuth } from "../context/AuthContext";
 
 const Profile = () => {
-  const { user, jwt, logout } = useAuth(); // Беремо користувача та JWT токен із контексту
-  const [formValue, setFormValue] = useState(user || {}); // Запобігаємо `undefined`
+  const { user, setUser, logout } = useAuth();
+  const [formValue, setFormValue] = useState({});
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
-      setFormValue(user);
-      console.log("Профільний user:", user);
+      setFormValue({
+        fullname: user.fullname || "",
+        organization: user.organization || "",
+        website: user.website || "",
+        phone: user.phone || "",
+        description: user.description || "",
+        user_status: user.user_status || "Кандидат",
+      });
+      setLoading(false);
     }
   }, [user]);
 
@@ -37,12 +46,7 @@ const Profile = () => {
       user_status: formValue.user_status,
     };
 
-    console.log(
-      "Відправляю запит до:",
-      `http://localhost:1337/api/users/${user.id}`
-    );
-    console.log("Дані для оновлення:", updateData);
-    console.log("JWT Token:", user.jwt);
+    console.log("Відправляю запит:", updateData);
 
     try {
       const response = await fetch(
@@ -63,6 +67,10 @@ const Profile = () => {
         throw new Error("Не вдалося зберегти профіль");
       }
 
+      setUser((prevUser) => ({
+        ...prevUser,
+        ...updateData,
+      }));
       setMessage("Дані успішно збережено!");
     } catch (error) {
       console.error("Помилка збереження профілю:", error);
@@ -75,7 +83,7 @@ const Profile = () => {
     window.location.href = "/";
   };
 
-  if (!user) {
+  if (loading) {
     return (
       <Container>
         <Panel header="Мій профіль" bordered>
@@ -87,29 +95,17 @@ const Profile = () => {
 
   return (
     <Container style={{ maxWidth: "100%", padding: "20px" }}>
-      <Panel header="Мій профіль" bordered style={{ width: "100%" }}>
+      <Panel header={<h2>Мій профіль</h2>} bordered style={{ width: "100%" }}>
         {message && (
           <Message showIcon type="info">
             {message}
           </Message>
         )}
 
-        {/* Аватар */}
-        {user.photo && (
-          <div style={{ textAlign: "center", marginBottom: "20px" }}>
-            <Avatar
-              circle
-              size="lg"
-              src={`http://localhost:1337${user.photo.url}`}
-              alt="Аватар"
-            />
-          </div>
-        )}
-
         <Form
           fluid
           formValue={formValue}
-          onChange={setFormValue}
+          onChange={(newFormValue) => setFormValue(newFormValue)}
           style={{ width: "100%" }}
         >
           <Form.Group>
@@ -130,10 +126,14 @@ const Profile = () => {
           </Form.Group>
           <Form.Group>
             <Form.ControlLabel>Опис діяльності</Form.ControlLabel>
-            <Form.Control
+            <Input
               name="description"
-              componentClass="textarea"
+              as="textarea"
               rows={3}
+              value={formValue.description}
+              onChange={(value) =>
+                setFormValue((prev) => ({ ...prev, description: value }))
+              }
             />
           </Form.Group>
 
@@ -144,7 +144,7 @@ const Profile = () => {
               style={{
                 fontWeight: "bold",
                 fontSize: "16px",
-                color: user.user_status === "Учасник" ? "green" : "gray",
+                color: user.user_status === "participant" ? "green" : "gray",
               }}
             >
               {user.user_status || "Кандидат"}

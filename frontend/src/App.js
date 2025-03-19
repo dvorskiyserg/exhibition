@@ -12,6 +12,8 @@ import Footer from "./components/Footer";
 import DashboardPage from "./components/admin/DashboardPage";
 import UsersPage from "./components/admin/UsersPage";
 import NewsPage from "./components/admin/NewsPage";
+import Contacts from "./pages/Contacts";
+import Gallery from "./pages/Gallery";
 
 // Визначаємо `basename` залежно від середовища
 const basename = process.env.NODE_ENV === "production" ? "/exhibition" : "/";
@@ -41,6 +43,8 @@ function App() {
                 <Route path="/admin/dashboard" element={<DashboardPage />} />
                 <Route path="/admin/users" element={<UsersPage />} />
                 <Route path="/admin/news" element={<NewsPage />} />
+                <Route path="/contacts" element={<Contacts />} />
+                <Route path="/gallery" element={<Gallery />} />
               </Routes>
             </div>
           </div>

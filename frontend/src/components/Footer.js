@@ -36,13 +36,10 @@ const Footer = () => {
               <i className="rs-icon rs-icon-instagram" />
             </a>
           </div>
-          <Button appearance="primary" className="feedback-button">
-            ФОРМА ЗВОРОТНЬОГО ЗВ'ЯЗКУ
-          </Button>
         </div>
       </div>
       <div className="footer-bottom">
-        <p>© 2025 KYIV INTERNATIONAL CONTRACT FAIR. ALL RIGHTS RESERVED.</p>
+        <p>© 2025 MAKOSH ETHNO. ALL RIGHTS RESERVED.</p>
       </div>
     </footer>
   );

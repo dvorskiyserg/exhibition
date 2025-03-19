@@ -1,0 +1,31 @@
+.callback-form-section {
+    background: #701a58;
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+  }
+  
+  .callback-form-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .callback-form-container h2 {
+    font-size: 24px;
+    margin: 0;
+    color: white;
+    line-height: 30px;
+  }
+  
+  .form-button {
+    background-color: #ffa800 !important;
+    color: #fff !important;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
