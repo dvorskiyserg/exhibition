@@ -203,7 +203,7 @@ const Header = () => {
               </Nav.Item>
               <Nav.Item
                 as={Link}
-                to="/profile"
+                to="/contacts"
                 onClick={() => setIsOpen(false)}
               >
                 Контакти
