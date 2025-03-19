@@ -191,6 +191,13 @@ const Header = () => {
               >
                 Про нас
               </Nav.Item>
+              <Nav.Item
+                as={Link}
+                to="/profile"
+                onClick={() => setIsOpen(false)}
+              >
+                Контакти
+              </Nav.Item>
               <Nav.Item>{getLoginIcon()}</Nav.Item>
             </Nav>
 
