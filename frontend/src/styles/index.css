@@ -462,5 +462,5 @@ body {
 /* Callback FORM modal*/
 
 .rs-modal {
-  margin: 160px auto 0;
+  margin: 160px auto 0 !important;
 }
