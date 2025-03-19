@@ -458,3 +458,6 @@ body {
 .image-gallery-content:not(.fullscreen) .image-gallery-slide .image-gallery-image {
   max-height: calc(60vh - 80px);
 }
+
+/* Callback FORM */
+
