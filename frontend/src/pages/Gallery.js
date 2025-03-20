@@ -108,7 +108,7 @@ const Gallery = () => {
 
   return (
     <Container>
-      <PageTitle title="Сторінка учасника" backgroundImage={bgImage} />
+      <PageTitle title="ЯК ЦЕ ВІДБУВАЛОСЯ" backgroundImage={bgImage} />
       <FlexboxGrid justify="center"></FlexboxGrid>
       <Panel>
         {/* Вибір виставки */}
