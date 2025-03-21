@@ -1,15 +1,14 @@
 import React from "react";
-import AppLayout from "./AdminLayout";
 import { Panel, Placeholder } from "rsuite";
+import AdminLayout from "./AdminLayout";
 
 const Dashboard = () => {
   return (
-    <AppLayout>
-      <h4>Огляд</h4>
-      <Panel bordered>
-        <Placeholder.Graph height={200} />
+    <AdminLayout>
+      <Panel bordered header="Панель адміністратора">
+        <Placeholder.Paragraph rows={8} />
       </Panel>
-    </AppLayout>
+    </AdminLayout>
   );
 };
 

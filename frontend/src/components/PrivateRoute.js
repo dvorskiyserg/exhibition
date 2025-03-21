@@ -6,11 +6,11 @@ const PrivateRoute = ({ adminOnly = false }) => {
   const { user } = useAuth();
 
   if (!user || !user.jwt) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" />;
   }
 
   if (adminOnly && user.role !== "admin") {
-    return <Navigate to="/profile" replace />;
+    return <Navigate to="/profile" />;
   }
 
   return <Outlet />;

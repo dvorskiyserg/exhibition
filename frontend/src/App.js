@@ -23,6 +23,8 @@ import Gallery from "./pages/Gallery";
 import Dashboard from "./components/admin/Dashboard";
 import Users from "./components/admin/Users";
 import News from "./components/admin/News";
+import Slider from "./components/admin/Slider";
+import Emails from "./components/admin/Emails";
 
 // Визначаємо `basename` залежно від середовища
 const basename = process.env.NODE_ENV === "production" ? "/exhibition" : "/";
@@ -51,10 +53,16 @@ function App() {
                 </Route>
 
                 {/* Приватні маршрути для адміністраторів */}
-                <Route element={<PrivateRoute adminOnly={true} />}>
-                  <Route path="/admin/dashboard" element={<Dashboard />} />
-                  <Route path="/admin/users" element={<Users />} />
-                  <Route path="/admin/news" element={<News />} />
+                <Route
+                  path="/admin"
+                  element={<PrivateRoute adminOnly={true} />}
+                >
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="users" element={<Users />} />
+                  <Route path="news" element={<News />} />
+                  <Route path="slider" element={<Slider />} />
+                  <Route path="gallery" element={<Gallery />} />
+                  <Route path="emails" element={<Emails />} />
                 </Route>
 
                 {/* Редирект для некоректних URL */}

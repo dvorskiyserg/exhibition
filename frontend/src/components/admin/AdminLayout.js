@@ -1,55 +1,73 @@
+// src/components/admin/AdminLayout.js
 import React from "react";
-import { Container, Sidebar, Sidenav, Nav, Header, Content } from "rsuite";
-import { Link } from "react-router-dom";
-import DashboardIcon from "@rsuite/icons/legacy/Dashboard";
-import GroupIcon from "@rsuite/icons/legacy/Group";
-import PageIcon from "@rsuite/icons/legacy/FileText";
-import GearIcon from "@rsuite/icons/legacy/Gear";
+import { Container, Sidebar, Sidenav, Nav, Content, Header } from "rsuite";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import DashboardIcon from "@rsuite/icons/List";
+import GroupIcon from "@rsuite/icons/Peoples";
+import NewsIcon from "@rsuite/icons/Detail";
+import ImageIcon from "@rsuite/icons/Image";
+import EmailIcon from "@rsuite/icons/Send";
 
-const AppLayout = ({ children }) => {
+const AdminLayout = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  if (!user || user.role !== "admin") {
+    navigate("/profile");
+  }
+
   return (
-    <Container>
-      <Sidebar
-        style={{ display: "flex", flexDirection: "column", height: "100vh" }}
-        width={260}
-        collapsible
-      >
-        <Sidenav.Header>
-          <div style={{ padding: 18, fontSize: 16, fontWeight: "bold" }}>
-            Admin Dashboard
-          </div>
-        </Sidenav.Header>
-        <Sidenav expanded={true}>
+    <Container className="dashboard-container">
+      <Sidebar style={{ width: 250 }}>
+        <Sidenav defaultOpenKeys={["3", "4"]} appearance="subtle">
           <Sidenav.Body>
             <Nav>
               <Nav.Item
-                as={Link}
-                to="/admin/dashboard"
-                icon={<DashboardIcon />}
+                icon={<DashboardIcon className="admin-sidenav-icon" />}
+                href="/admin/dashboard"
               >
                 Панель керування
               </Nav.Item>
-              <Nav.Item as={Link} to="/admin/users" icon={<GroupIcon />}>
+              <Nav.Item
+                icon={<GroupIcon className="admin-sidenav-icon" />}
+                href="/admin/users"
+              >
                 Користувачі
               </Nav.Item>
-              <Nav.Item as={Link} to="/admin/news" icon={<PageIcon />}>
+              <Nav.Item
+                icon={<NewsIcon className="admin-sidenav-icon" />}
+                href="/admin/news"
+              >
                 Новини
               </Nav.Item>
-              <Nav.Item as={Link} to="/admin/settings" icon={<GearIcon />}>
-                Налаштування
+              <Nav.Item
+                icon={<ImageIcon className="admin-sidenav-icon" />}
+                href="/admin/gallery"
+              >
+                Галерея
               </Nav.Item>
+              <Nav.Item
+                icon={<EmailIcon className="admin-sidenav-icon" />}
+                href="/admin/emails"
+              >
+                Розсилка
+              </Nav.Item>
+              <Nav.Item onClick={logout}>Вийти</Nav.Item>
             </Nav>
           </Sidenav.Body>
         </Sidenav>
       </Sidebar>
       <Container>
-        <Header style={{ padding: "15px", background: "#f7f7fa" }}>
-          <h3>Адміністративна панель</h3>
+        <Header>
+          <h4>Панель адміністратора</h4>
         </Header>
-        <Content style={{ padding: "20px" }}>{children}</Content>
+        <Content>
+          <Outlet />
+        </Content>
       </Container>
     </Container>
   );
 };
 
-export default AppLayout;
+export default AdminLayout;

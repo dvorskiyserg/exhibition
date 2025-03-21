@@ -500,3 +500,11 @@ body {
   margin: 160px auto 0 !important;
 }
 
+/* Admin DASHBOARD */
+.dashboard-container {
+  margin: 50px 30px;
+}
+
+.admin-sidenav-icon {
+  color: var(--background-menu-color) !important;
+}

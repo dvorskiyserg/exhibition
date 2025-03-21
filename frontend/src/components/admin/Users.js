@@ -1,52 +1,58 @@
-import React, { useState, useEffect } from "react";
-import AppLayout from "./AdminLayout";
-import { Table, Tag, IconButton } from "rsuite";
-import EditIcon from "@rsuite/icons/Edit";
+import React, { useEffect, useState } from "react";
+import { Table, Button, Panel, Message } from "rsuite";
+import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
 
 const { Column, HeaderCell, Cell } = Table;
 
 const Users = () => {
+  const { user } = useAuth();
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:1337/api/users")
-      .then((res) => res.json())
-      .then(setUsers)
-      .catch(console.error);
-  }, []);
+    axios
+      .get("http://localhost:1337/api/users", {
+        headers: { Authorization: `Bearer ${user.jwt}` },
+      })
+      .then((res) => setUsers(res.data))
+      .catch((err) => setError("Помилка завантаження користувачів"))
+      .finally(() => setLoading(false));
+  }, [user]);
 
   return (
-    <AppLayout>
-      <h4>Користувачі</h4>
-      <Table data={users} autoHeight bordered>
-        <Column width={200} align="center" fixed>
+    <Panel bordered header="Користувачі">
+      {error && <Message type="error">{error}</Message>}
+      <Table height={400} data={users} loading={loading} autoHeight>
+        <Column flexGrow={1}>
+          <HeaderCell>ID</HeaderCell>
+          <Cell dataKey="id" />
+        </Column>
+        <Column flexGrow={2}>
           <HeaderCell>Ім'я</HeaderCell>
           <Cell dataKey="username" />
         </Column>
-        <Column width={200}>
+        <Column flexGrow={2}>
           <HeaderCell>Email</HeaderCell>
           <Cell dataKey="email" />
         </Column>
-        <Column width={150}>
+        <Column flexGrow={1}>
           <HeaderCell>Роль</HeaderCell>
-          <Cell>
-            {(rowData) => <Tag color="blue">{rowData.role?.name}</Tag>}
-          </Cell>
+          <Cell dataKey="role.name" />
         </Column>
-        <Column width={100} align="center">
+        <Column flexGrow={1}>
           <HeaderCell>Дії</HeaderCell>
           <Cell>
             {(rowData) => (
-              <IconButton
-                icon={<EditIcon />}
-                onClick={() => console.log("Редагувати", rowData)}
-                appearance="subtle"
-              />
+              <Button size="xs" appearance="link">
+                Редагувати
+              </Button>
             )}
           </Cell>
         </Column>
       </Table>
-    </AppLayout>
+    </Panel>
   );
 };
 
