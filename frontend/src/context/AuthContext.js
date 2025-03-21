@@ -7,18 +7,22 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [hasFetched, setHasFetched] = useState(false); // Додаємо прапорець
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    const savedJwt = localStorage.getItem("jwt");
+    if (!hasFetched) {
+      const savedUser = localStorage.getItem("user");
+      const savedJwt = localStorage.getItem("jwt");
 
-    if (savedUser && savedJwt) {
-      const parsedUser = JSON.parse(savedUser);
-      fetchUserData(savedJwt);
-    } else {
-      setLoading(false);
+      if (savedUser && savedJwt) {
+        const parsedUser = JSON.parse(savedUser);
+        fetchUserData(savedJwt);
+      } else {
+        setLoading(false);
+      }
+      setHasFetched(true); // Ставимо прапорець, щоб useEffect більше не викликався
     }
-  }, []);
+  }, [hasFetched]);
 
   const fetchUserData = async (jwt) => {
     if (!jwt) {
@@ -29,13 +33,13 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const userResponse = await axios.get(
-        "http://localhost:1337/api/users/me?populate=role", // Додаємо populate=role
+        "http://localhost:1337/api/users/me?populate=role",
         {
           headers: { Authorization: `Bearer ${jwt}` },
         }
       );
 
-      console.log("Дані користувача:", userResponse.data);
+      // console.log("Дані користувача:", userResponse.data);
 
       const role =
         userResponse.data.role && userResponse.data.role.name
@@ -52,7 +56,7 @@ export const AuthProvider = ({ children }) => {
         phone: userResponse.data.phone || "",
         description: userResponse.data.description || "",
         user_status: userResponse.data.user_status || "Кандидат",
-        role, // Тепер гарантовано отримуємо роль
+        role,
         jwt,
       };
 

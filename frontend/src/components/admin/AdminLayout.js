@@ -1,7 +1,6 @@
-// src/components/admin/AdminLayout.js
 import React from "react";
 import { Container, Sidebar, Sidenav, Nav, Content, Header } from "rsuite";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import DashboardIcon from "@rsuite/icons/List";
 import GroupIcon from "@rsuite/icons/Peoples";
@@ -24,32 +23,39 @@ const AdminLayout = () => {
           <Sidenav.Body>
             <Nav>
               <Nav.Item
-                icon={<DashboardIcon className="admin-sidenav-icon" />}
-                href="/admin/dashboard"
-              >
-                Панель керування
-              </Nav.Item>
-              <Nav.Item
+                as={NavLink}
+                to="/admin/users"
                 icon={<GroupIcon className="admin-sidenav-icon" />}
-                href="/admin/users"
               >
                 Користувачі
               </Nav.Item>
+
               <Nav.Item
+                as={NavLink}
+                to="/admin/slideredit"
                 icon={<NewsIcon className="admin-sidenav-icon" />}
-                href="/admin/news"
+              >
+                Слайдер
+              </Nav.Item>
+
+              <Nav.Item
+                as={NavLink}
+                to="/admin/news"
+                icon={<NewsIcon className="admin-sidenav-icon" />}
               >
                 Новини
               </Nav.Item>
               <Nav.Item
+                as={NavLink}
+                to="/admin/galleryedit"
                 icon={<ImageIcon className="admin-sidenav-icon" />}
-                href="/admin/gallery"
               >
                 Галерея
               </Nav.Item>
               <Nav.Item
+                as={NavLink}
+                to="/admin/emails"
                 icon={<EmailIcon className="admin-sidenav-icon" />}
-                href="/admin/emails"
               >
                 Розсилка
               </Nav.Item>

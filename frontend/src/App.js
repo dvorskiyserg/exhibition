@@ -20,12 +20,13 @@ import Contacts from "./pages/Contacts";
 import Gallery from "./pages/Gallery";
 
 // Адмін-панель
+import AdminLayout from "./components/admin/AdminLayout";
 import Dashboard from "./components/admin/Dashboard";
 import Users from "./components/admin/Users";
 import News from "./components/admin/News";
-import Slider from "./components/admin/Slider";
 import Emails from "./components/admin/Emails";
-
+import SliderEdit from "./components/admin/SliderEdit";
+import Galleryedit from "./components/admin/GalleryEdit";
 // Визначаємо `basename` залежно від середовища
 const basename = process.env.NODE_ENV === "production" ? "/exhibition" : "/";
 
@@ -53,16 +54,15 @@ function App() {
                 </Route>
 
                 {/* Приватні маршрути для адміністраторів */}
-                <Route
-                  path="/admin"
-                  element={<PrivateRoute adminOnly={true} />}
-                >
-                  <Route path="dashboard" element={<Dashboard />} />
-                  <Route path="users" element={<Users />} />
-                  <Route path="news" element={<News />} />
-                  <Route path="slider" element={<Slider />} />
-                  <Route path="gallery" element={<Gallery />} />
-                  <Route path="emails" element={<Emails />} />
+                <Route path="/admin" element={<PrivateRoute adminOnly />}>
+                  <Route element={<AdminLayout />}>
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="users" element={<Users />} />
+                    <Route path="slideredit" element={<SliderEdit />} />
+                    <Route path="news" element={<News />} />
+                    <Route path="galleryedit" element={<Galleryedit />} />
+                    <Route path="emails" element={<Emails />} />
+                  </Route>
                 </Route>
 
                 {/* Редирект для некоректних URL */}
