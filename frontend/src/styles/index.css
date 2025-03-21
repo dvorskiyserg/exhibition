@@ -477,15 +477,21 @@ body {
   max-height: calc(60vh - 80px);
 }
 
-.arrow-down-icon {
+.rs-picker-caret-icon {
   color: var(--background-menu-color) !important;
   width: 2em;
   height: 1.3em;
+  margin-left: 20px;
 }
 
 .gallery-picker {
   font-size: 15px;
   border-color: var(--btn-color) !important;
+}
+
+.rs-picker-has-value.rs-picker-cleanable .rs-picker-toggle.rs-btn, .rs-picker-toggle-wrapper .rs-picker-toggle.rs-btn {
+  padding-right: 11px;
+  padding-left: 25px;
 }
 
 /* Callback FORM modal*/

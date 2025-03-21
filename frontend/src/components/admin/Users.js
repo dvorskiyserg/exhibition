@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import AppLayout from "./AppLayout";
+import AppLayout from "./AdminLayout";
 import { Table, Tag, IconButton } from "rsuite";
 import EditIcon from "@rsuite/icons/Edit";
 

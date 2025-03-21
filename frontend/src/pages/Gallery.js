@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { SelectPicker, Panel, Container, FlexboxGrid } from "rsuite";
-import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
 import ImageGallery from "react-image-gallery";
 import PageTitle from "../components/PageTitle";
 import bgImage from "../assets/header-bg.jpg";
@@ -117,17 +116,28 @@ const Gallery = () => {
           onChange={handleExhibitionChange}
           defaultValue={selectedExhibition.id}
           searchable={false}
-          style={{ width: 300, marginBottom: "20px" }}
-          renderMenuItem={(label, item) => (
-            <div style={{ display: "flex", alignItems: "center" }}>{label}</div>
+          cleanable={false}
+          style={{ width: 180, marginBottom: "20px" }}
+          renderMenuItem={(label) => (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                color: "#75236d",
+              }}
+            >
+              {label}
+            </div>
           )}
           renderValue={(value, item) => (
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                color: "#75236d",
+              }}
+            >
               {item.label}
-              <ArrowDownLineIcon
-                className="arrow-down-icon"
-                style={{ marginLeft: 8 }}
-              />
             </div>
           )}
         />

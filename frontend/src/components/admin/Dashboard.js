@@ -1,5 +1,5 @@
 import React from "react";
-import AppLayout from "./AppLayout";
+import AppLayout from "./AdminLayout";
 import { Panel, Placeholder } from "rsuite";
 
 const Dashboard = () => {
