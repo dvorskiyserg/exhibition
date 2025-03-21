@@ -41,7 +41,11 @@ const Login = () => {
             width: "90%", // Адаптивно займає 90% ширини на мобільних
           }}
         >
-          <Panel header={<h3>Вхід</h3>} bordered>
+          <Panel
+            header={<h2>Вхід</h2>}
+            bordered
+            className="Login-Register-PanelTitle"
+          >
             {error && <Message type="error">{error}</Message>}
             <Form fluid>
               <Form.Group>

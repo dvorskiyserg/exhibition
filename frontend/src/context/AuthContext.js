@@ -10,22 +10,37 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
-    if (savedUser) {
+    const savedJwt = localStorage.getItem("jwt");
+
+    if (savedUser && savedJwt) {
       const parsedUser = JSON.parse(savedUser);
-      fetchUserData(parsedUser.jwt); // Оновлюємо дані користувача з бази при старті
+      fetchUserData(savedJwt);
     } else {
       setLoading(false);
     }
   }, []);
 
   const fetchUserData = async (jwt) => {
+    if (!jwt) {
+      console.error("JWT відсутній, вихід...");
+      logout();
+      return;
+    }
+
     try {
       const userResponse = await axios.get(
-        "http://localhost:1337/api/users/me",
+        "http://localhost:1337/api/users/me?populate=role", // Додаємо populate=role
         {
           headers: { Authorization: `Bearer ${jwt}` },
         }
       );
+
+      console.log("Дані користувача:", userResponse.data);
+
+      const role =
+        userResponse.data.role && userResponse.data.role.name
+          ? userResponse.data.role.name.toLowerCase()
+          : "authenticated";
 
       const fullUserData = {
         id: userResponse.data.id,
@@ -37,12 +52,13 @@ export const AuthProvider = ({ children }) => {
         phone: userResponse.data.phone || "",
         description: userResponse.data.description || "",
         user_status: userResponse.data.user_status || "Кандидат",
-        role: userResponse.data.role?.name.toLowerCase() || "authenticated",
+        role, // Тепер гарантовано отримуємо роль
         jwt,
       };
 
       setUser(fullUserData);
       localStorage.setItem("user", JSON.stringify(fullUserData));
+      localStorage.setItem("jwt", jwt);
     } catch (error) {
       console.error("Помилка отримання даних користувача:", error);
       logout();
@@ -59,6 +75,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       const jwt = res.data.jwt;
+      localStorage.setItem("jwt", jwt);
       await fetchUserData(jwt);
     } catch (error) {
       console.error("Помилка логіну:", error);
@@ -69,6 +86,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("jwt");
     setLoading(false);
   };
 

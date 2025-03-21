@@ -5,7 +5,7 @@ import EditIcon from "@rsuite/icons/Edit";
 
 const { Column, HeaderCell, Cell } = Table;
 
-const UsersPage = () => {
+const Users = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -50,4 +50,4 @@ const UsersPage = () => {
   );
 };
 
-export default UsersPage;
+export default Users;

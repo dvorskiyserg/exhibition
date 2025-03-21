@@ -4,7 +4,7 @@ import { Button, Table, Modal, Form } from "rsuite";
 
 const { Column, HeaderCell, Cell } = Table;
 
-const NewsPage = () => {
+const News = () => {
   const [news, setNews] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [formValue, setFormValue] = useState({});
@@ -70,4 +70,4 @@ const NewsPage = () => {
   );
 };
 
-export default NewsPage;
+export default News;

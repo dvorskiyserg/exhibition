@@ -2,7 +2,7 @@ import React from "react";
 import AppLayout from "./AppLayout";
 import { Panel, Placeholder } from "rsuite";
 
-const DashboardPage = () => {
+const Dashboard = () => {
   return (
     <AppLayout>
       <h4>Огляд</h4>
@@ -13,4 +13,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default Dashboard;

@@ -7,11 +7,13 @@ export default [
     },
   },
   {
-    name: 'strapi::cors',
+    name: "strapi::cors",
     config: {
       enabled: true,
-      origin: ['http://localhost:3000'], // Додай свій фронтенд URL сюди
-      headers: '*',
+      origin: "*", // Дозволити запити з будь-якого джерела (можна вказати конкретні домени)
+      headers: "*", // Дозволити всі заголовки
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Дозволені методи
+      credentials: true,
     },
   },
   'strapi::poweredBy',
