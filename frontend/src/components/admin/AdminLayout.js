@@ -7,6 +7,7 @@ import GroupIcon from "@rsuite/icons/Peoples";
 import NewsIcon from "@rsuite/icons/Detail";
 import ImageIcon from "@rsuite/icons/Image";
 import EmailIcon from "@rsuite/icons/Send";
+import MediaIcon from "@rsuite/icons/Media";
 
 const AdminLayout = () => {
   const { user, logout } = useAuth();
@@ -24,6 +25,13 @@ const AdminLayout = () => {
             <Nav>
               <Nav.Item
                 as={NavLink}
+                to="/admin/dashboard"
+                icon={<DashboardIcon className="admin-sidenav-icon" />}
+              >
+                Dashboard
+              </Nav.Item>
+              <Nav.Item
+                as={NavLink}
                 to="/admin/users"
                 icon={<GroupIcon className="admin-sidenav-icon" />}
               >
@@ -33,7 +41,7 @@ const AdminLayout = () => {
               <Nav.Item
                 as={NavLink}
                 to="/admin/slideredit"
-                icon={<NewsIcon className="admin-sidenav-icon" />}
+                icon={<MediaIcon className="admin-sidenav-icon" />}
               >
                 Слайдер
               </Nav.Item>
