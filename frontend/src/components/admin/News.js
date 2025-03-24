@@ -16,9 +16,12 @@ const News = () => {
 
   const fetchNews = async () => {
     try {
-      const response = await axios.get("http://localhost:1337/api/news", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
-      });
+      const response = await axios.get(
+        "http://localhost:1337/api/news-lists?populate=image",
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+        }
+      );
       setNews(response.data);
     } catch (err) {
       setError("Не вдалося отримати новини");
@@ -29,9 +32,13 @@ const News = () => {
 
   const handleAddNews = async () => {
     try {
-      await axios.post("http://localhost:1337/api/news", formValue, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
-      });
+      await axios.post(
+        "http://localhost:1337/api/news-lists?populate=image",
+        formValue,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+        }
+      );
       setShowModal(false);
       fetchNews();
     } catch (err) {
