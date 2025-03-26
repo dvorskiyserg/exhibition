@@ -5,15 +5,14 @@ body {
   padding: 0;
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
-  line-height: 25px !important;
 }
 
 /* Визначення глобальних кольорів */
 :root {
-  --primary-color: #75236d; /* Основний колір */
+  --primary-color: #3a215b; /* Основний колір */
   --secondary-color: #ffa800; /* Вторинний колір */
   --background-color: #ffffff; /* Колір фону */
-  --background-menu-color: #6c2266; /* Колір фону */  
+  --background-menu-color: #3a215b; /* Колір фону */  
   --text-color: #333333; /* Колір тексту */
   --navlink-color: #f0b400; /* Колір при наведенні */
   --navlink-default: #ffffff; /* Звичайний колір тексту */
@@ -21,7 +20,11 @@ body {
   --navlink-hover: #f0b400;
   --btn-color:  #ffa800;
   --btn-hover-primary: #c47600;
-  --btn-hover-secondary: #5a005d;
+  --btn-hover-secondary: #502e7d;
+}
+
+.rs-content {
+  line-height: 25px !important;
 }
 
 /* Загальний стиль для хедера */
@@ -275,12 +278,16 @@ body {
 
 .rs-icon {
   /* font-size: 18px !important; */
-  color: white !important;
+  color: var(--primary-color);
 }
 
 .LoginLink {
-  color: #fff !important;
+  color: var(--primary-color) !important;
   margin-top: 7px;
+}
+
+.mobile_open-close_icon {
+  color: #fff;
 }
 
 .main-slider {
@@ -418,7 +425,7 @@ body {
 }
 
 .preheader {
-  background-color: #5a005d !important;
+  background-color: #f8b218 !important;
   height: 30px;
   display: flex;
   justify-content: flex-end;
@@ -441,7 +448,7 @@ body {
 }
 
 .insta-icon {
-  color: #fff !important;
+  color: var(--primary-color) !important;
   cursor: pointer;
   font-size: 16pt;
   margin-top: 5px;

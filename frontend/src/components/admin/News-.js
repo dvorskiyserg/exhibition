@@ -25,13 +25,7 @@ const News = () => {
       const res = await API.get("/news-lists?populate=image", {
         headers: { Authorization: `Bearer ${user.jwt}` },
       });
-      const data = res.data?.data || [];
-      const normalized = data.map((item) => ({
-        id: item.id,
-        ...item.attributes,
-        documentId: item.documentId || item.id,
-      }));
-      setNews(normalized);
+      setNews(res.data?.data || []);
     } catch (err) {
       console.error(err);
       setError("Не вдалося отримати новини");
@@ -44,16 +38,20 @@ const News = () => {
     fetchNews();
   }, []);
 
+  const extractTextFromBlocks = (blocks) => {
+    if (!Array.isArray(blocks)) return "";
+    return blocks
+      .map((b) => b?.children?.map((c) => c?.text).join("") || "")
+      .join("\n");
+  };
+
   const openModal = (item = null) => {
     if (item) {
       setEditItem(item);
-      const { title, content, published } = item;
+      const { title, content, published } = item.attributes || {};
       setFormValue({
         title: title || "",
-        content:
-          typeof content === "string"
-            ? content
-            : extractTextFromBlocks(content),
+        content: extractTextFromBlocks(content),
         published: !!published,
       });
     } else {
@@ -63,13 +61,6 @@ const News = () => {
     setModalOpen(true);
   };
 
-  const extractTextFromBlocks = (blocks) => {
-    if (!Array.isArray(blocks)) return "";
-    return blocks
-      .map((b) => b?.children?.map((c) => c?.text).join("") || "")
-      .join("\n");
-  };
-
   const handleSubmit = async () => {
     const payload = { data: formValue };
 
@@ -77,35 +68,17 @@ const News = () => {
       try {
         await API.put(
           `/news-lists/${editItem.documentId}?locale=${editItem.locale}`,
-          payload,
-          {
-            headers: { Authorization: `Bearer ${user.jwt}` },
-          }
+          payload
         );
       } catch (err) {
         if (err.response?.status === 404) {
           await API.post(
             `/news-lists/${editItem.documentId}/localizations?locale=${editItem.locale}`,
-            payload,
-            {
-              headers: { Authorization: `Bearer ${user.jwt}` },
-            }
+            payload
           );
         } else {
-          console.error("Помилка збереження новини", err);
-          setError("Помилка при збереженні новини");
+          throw err;
         }
-      }
-    } else {
-      try {
-        await API.post("/news-lists", payload, {
-          headers: { Authorization: `Bearer ${user.jwt}` },
-        });
-        setModalOpen(false);
-        fetchNews();
-      } catch (err) {
-        console.error("Помилка створення новини", err);
-        setError("Помилка при створенні новини");
       }
     }
   };
@@ -164,16 +137,10 @@ const News = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form fluid>
+          <Form fluid formValue={formValue} onChange={setFormValue}>
             <Form.Group>
               <Form.ControlLabel>Заголовок</Form.ControlLabel>
-              <Form.Control
-                name="title"
-                value={formValue.title}
-                onChange={(val) =>
-                  setFormValue((prev) => ({ ...prev, title: val }))
-                }
-              />
+              <Form.Control name="title" />
             </Form.Group>
             <Form.Group>
               <Form.ControlLabel>Контент</Form.ControlLabel>

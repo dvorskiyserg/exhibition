@@ -1,9 +1,10 @@
 .footer {
-    background: #4e0d3a;
+    background: #3a215b;
     color: white;
     padding: 40px 0 0 0;
     font-size: 14px;
     /* margin-top: 80px; */
+    line-height: 25px !important;
   }
   
   .footer-top {
@@ -53,6 +54,6 @@
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     padding-top: 30px;
     padding-bottom: 30px;
-    background-color: #39042d;
+    background-color: #29133d;
   }
   

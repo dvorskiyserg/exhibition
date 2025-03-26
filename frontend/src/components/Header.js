@@ -5,14 +5,14 @@ import { MdLogin } from "react-icons/md";
 import { FaInstagram } from "react-icons/fa";
 import AdminIcon from "@rsuite/icons/Admin";
 import { useTranslation } from "react-i18next";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, color } from "framer-motion";
 import MenuIcon from "@rsuite/icons/Menu";
 import CloseIcon from "@rsuite/icons/Close";
 import { useAuth } from "../context/AuthContext";
 import logo from "../assets/logo.png";
 import "../styles/index.css";
 
-const languageIcons = { ua: "🇺🇦", en: "🇬🇧", de: "🇩🇪" };
+const languageIcons = { ua: "UA", en: "EN", de: "DE" };
 const languageNames = { ua: "UA", en: "EN", de: "DE" };
 
 const Header = () => {
@@ -93,7 +93,7 @@ const Header = () => {
             <span
               ref={ref}
               {...props}
-              style={{ cursor: "pointer", fontSize: "20px" }}
+              style={{ cursor: "pointer", fontSize: "18px", color: "#3a215b" }}
             >
               {languageIcons[i18n.language]}
             </span>
@@ -120,7 +120,11 @@ const Header = () => {
         {isMobile ? (
           <Nav>
             <Nav.Item onClick={() => setIsOpen(!isOpen)}>
-              {isOpen ? <CloseIcon /> : <MenuIcon />}
+              {isOpen ? (
+                <CloseIcon className="mobile_open-close_icon" />
+              ) : (
+                <MenuIcon className="mobile_open-close_icon" />
+              )}
             </Nav.Item>
           </Nav>
         ) : (
