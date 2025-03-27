@@ -12,6 +12,7 @@ const News = () => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [formValue, setFormValue] = useState({
@@ -20,18 +21,33 @@ const News = () => {
     published: false,
   });
 
+  // const fetchNews = async () => {
+  //   try {
+  //     const res = await API.get("/news-lists?populate=image", {
+  //       headers: { Authorization: `Bearer ${user.jwt}` },
+  //     });
+  //     const data = res.data?.data || [];
+  //     const normalized = data.map((item) => ({
+  //       id: item.id,
+  //       ...item.attributes,
+  //       documentId: item?.attributes?.documentId || item.id,
+  //       locale: item?.attributes?.locale || "en",
+  //     }));
+  //     setNews(normalized);
+  //   } catch (err) {
+  //     console.error(err);
+  //     setError("Не вдалося отримати новини");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const fetchNews = async () => {
     try {
       const res = await API.get("/news-lists?populate=image", {
         headers: { Authorization: `Bearer ${user.jwt}` },
       });
-      const data = res.data?.data || [];
-      const normalized = data.map((item) => ({
-        id: item.id,
-        ...item.attributes,
-        documentId: item.documentId || item.id,
-      }));
-      setNews(normalized);
+      setNews(res.data?.data || []);
     } catch (err) {
       console.error(err);
       setError("Не вдалося отримати новини");
@@ -45,15 +61,14 @@ const News = () => {
   }, []);
 
   const openModal = (item = null) => {
+    setSuccess("");
+    setError("");
     if (item) {
       setEditItem(item);
       const { title, content, published } = item;
       setFormValue({
         title: title || "",
-        content:
-          typeof content === "string"
-            ? content
-            : extractTextFromBlocks(content),
+        content: typeof content === "string" ? content : "",
         published: !!published,
       });
     } else {
@@ -63,50 +78,52 @@ const News = () => {
     setModalOpen(true);
   };
 
-  const extractTextFromBlocks = (blocks) => {
-    if (!Array.isArray(blocks)) return "";
-    return blocks
-      .map((b) => b?.children?.map((c) => c?.text).join("") || "")
-      .join("\n");
-  };
-
   const handleSubmit = async () => {
-    const payload = { data: formValue };
+    const payload = {
+      data: {
+        ...formValue,
+      },
+    };
 
-    if (editItem && editItem.locale && editItem.documentId) {
-      try {
-        await API.put(
-          `/news-lists/${editItem.documentId}?locale=${editItem.locale}`,
-          payload,
-          {
-            headers: { Authorization: `Bearer ${user.jwt}` },
-          }
-        );
-      } catch (err) {
-        if (err.response?.status === 404) {
-          await API.post(
-            `/news-lists/${editItem.documentId}/localizations?locale=${editItem.locale}`,
+    try {
+      if (editItem && editItem.locale && editItem.documentId) {
+        // Оновлення існуючої локалізації
+        try {
+          await API.put(
+            `/news-lists/${editItem.documentId}?locale=${editItem.locale}`,
             payload,
             {
               headers: { Authorization: `Bearer ${user.jwt}` },
             }
           );
-        } else {
-          console.error("Помилка збереження новини", err);
-          setError("Помилка при збереженні новини");
+          setSuccess("Новину оновлено успішно");
+        } catch (err) {
+          if (err.response?.status === 404) {
+            await API.post(
+              `/news-lists/${editItem.documentId}/localizations?locale=${editItem.locale}`,
+              payload,
+              {
+                headers: { Authorization: `Bearer ${user.jwt}` },
+              }
+            );
+            setSuccess("Локалізацію створено успішно");
+          } else {
+            throw err;
+          }
         }
-      }
-    } else {
-      try {
+      } else {
+        // Створення нової новини (без locale!)
         await API.post("/news-lists", payload, {
           headers: { Authorization: `Bearer ${user.jwt}` },
         });
-        setModalOpen(false);
-        fetchNews();
-      } catch (err) {
-        console.error("Помилка створення новини", err);
-        setError("Помилка при створенні новини");
+        setSuccess("Новину створено успішно");
       }
+
+      setModalOpen(false);
+      fetchNews();
+    } catch (err) {
+      console.error("Помилка збереження новини", err);
+      setError("Помилка при збереженні новини");
     }
   };
 
@@ -123,6 +140,7 @@ const News = () => {
   return (
     <Panel header="Новини" bordered>
       {error && <Message type="error">{error}</Message>}
+      {success && <Message type="success">{success}</Message>}
 
       <Button appearance="primary" onClick={() => openModal()}>
         Додати новину
@@ -131,7 +149,7 @@ const News = () => {
       <Table autoHeight data={news} loading={loading} style={{ marginTop: 20 }}>
         <Column flexGrow={2}>
           <HeaderCell>Заголовок</HeaderCell>
-          <Cell>{(rowData) => rowData?.title || "—"}</Cell>
+          <Cell dataKey="title" />
         </Column>
         <Column flexGrow={4}>
           <HeaderCell>Контент</HeaderCell>
@@ -179,7 +197,7 @@ const News = () => {
               <Form.ControlLabel>Контент</Form.ControlLabel>
               <ReactQuill
                 theme="snow"
-                value={formValue.content}
+                value={formValue.content || ""}
                 onChange={(val) =>
                   setFormValue((prev) => ({ ...prev, content: val }))
                 }
