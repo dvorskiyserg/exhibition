@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Panel, Button, Table, Modal, Form, Message, Toggle } from "rsuite";
+import {
+  Panel,
+  Button,
+  Table,
+  Modal,
+  Form,
+  Message,
+  Toggle,
+  Uploader,
+} from "rsuite";
 import { useAuth } from "../../context/AuthContext";
 import API from "../../api/axiosInstance";
 import ReactQuill from "react-quill";
@@ -14,33 +23,13 @@ const News = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
   const [editItem, setEditItem] = useState(null);
   const [formValue, setFormValue] = useState({
     title: "",
     content: "",
     published: false,
   });
-
-  // const fetchNews = async () => {
-  //   try {
-  //     const res = await API.get("/news-lists?populate=image", {
-  //       headers: { Authorization: `Bearer ${user.jwt}` },
-  //     });
-  //     const data = res.data?.data || [];
-  //     const normalized = data.map((item) => ({
-  //       id: item.id,
-  //       ...item.attributes,
-  //       documentId: item?.attributes?.documentId || item.id,
-  //       locale: item?.attributes?.locale || "en",
-  //     }));
-  //     setNews(normalized);
-  //   } catch (err) {
-  //     console.error(err);
-  //     setError("Не вдалося отримати новини");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const fetchNews = async () => {
     try {
@@ -60,6 +49,28 @@ const News = () => {
     fetchNews();
   }, []);
 
+  const blocksToHtml = (blocks) => {
+    if (!Array.isArray(blocks)) return blocks || "";
+    return blocks
+      .map(
+        (block) =>
+          `<p>${block.children.map((child) => child.text).join("")}</p>`
+      )
+      .join("");
+  };
+
+  const htmlToBlocks = (html) => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return Array.from(div.querySelectorAll("p")).map((p) => ({
+      type: "paragraph",
+      children: Array.from(p.childNodes).map((node) => ({
+        type: "text",
+        text: node.textContent,
+      })),
+    }));
+  };
+
   const openModal = (item = null) => {
     setSuccess("");
     setError("");
@@ -68,13 +79,14 @@ const News = () => {
       const { title, content, published } = item;
       setFormValue({
         title: title || "",
-        content: typeof content === "string" ? content : "",
+        content: blocksToHtml(content),
         published: !!published,
       });
     } else {
       setEditItem(null);
       setFormValue({ title: "", content: "", published: false });
     }
+    setImageFile(null);
     setModalOpen(true);
   };
 
@@ -82,19 +94,17 @@ const News = () => {
     const payload = {
       data: {
         ...formValue,
+        content: htmlToBlocks(formValue.content),
       },
     };
 
     try {
       if (editItem && editItem.locale && editItem.documentId) {
-        // Оновлення існуючої локалізації
         try {
           await API.put(
             `/news-lists/${editItem.documentId}?locale=${editItem.locale}`,
             payload,
-            {
-              headers: { Authorization: `Bearer ${user.jwt}` },
-            }
+            { headers: { Authorization: `Bearer ${user.jwt}` } }
           );
           setSuccess("Новину оновлено успішно");
         } catch (err) {
@@ -102,9 +112,7 @@ const News = () => {
             await API.post(
               `/news-lists/${editItem.documentId}/localizations?locale=${editItem.locale}`,
               payload,
-              {
-                headers: { Authorization: `Bearer ${user.jwt}` },
-              }
+              { headers: { Authorization: `Bearer ${user.jwt}` } }
             );
             setSuccess("Локалізацію створено успішно");
           } else {
@@ -112,7 +120,6 @@ const News = () => {
           }
         }
       } else {
-        // Створення нової новини (без locale!)
         await API.post("/news-lists", payload, {
           headers: { Authorization: `Bearer ${user.jwt}` },
         });
@@ -129,7 +136,10 @@ const News = () => {
 
   const getPreviewText = (content) => {
     if (Array.isArray(content) && content.length > 0) {
-      return content[0]?.children?.[0]?.text || "—";
+      return content
+        .map((block) => block.children.map((child) => child.text).join(" "))
+        .join(" ")
+        .slice(0, 100);
     }
     if (typeof content === "string") {
       return content.slice(0, 100);
@@ -153,11 +163,11 @@ const News = () => {
         </Column>
         <Column flexGrow={4}>
           <HeaderCell>Контент</HeaderCell>
-          <Cell>{(rowData) => getPreviewText(rowData?.content)}</Cell>
+          <Cell>{(rowData) => getPreviewText(rowData.content)}</Cell>
         </Column>
         <Column width={120} align="center">
           <HeaderCell>Опубліковано</HeaderCell>
-          <Cell>{(rowData) => (rowData?.published ? "Так" : "Ні")}</Cell>
+          <Cell>{(rowData) => (rowData.published ? "Так" : "Ні")}</Cell>
         </Column>
         <Column width={100} align="center">
           <HeaderCell>Дії</HeaderCell>
@@ -197,10 +207,18 @@ const News = () => {
               <Form.ControlLabel>Контент</Form.ControlLabel>
               <ReactQuill
                 theme="snow"
+                modules={{ toolbar: false }}
                 value={formValue.content || ""}
                 onChange={(val) =>
                   setFormValue((prev) => ({ ...prev, content: val }))
                 }
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.ControlLabel>Зображення</Form.ControlLabel>
+              <Uploader
+                autoUpload={false}
+                onChange={(fileList) => setImageFile(fileList[0]?.blobFile)}
               />
             </Form.Group>
             <Form.Group>
