@@ -8,6 +8,7 @@ import {
   Message,
   Toggle,
   Uploader,
+  SelectPicker,
 } from "rsuite";
 import { useAuth } from "../../context/AuthContext";
 import API from "../../api/axiosInstance";
@@ -27,6 +28,7 @@ const SliderEdit = () => {
     type: "image",
     title: "",
     videoUrl: "",
+    videoEmbed: "",
     published: false,
     image: null,
   });
@@ -53,11 +55,12 @@ const SliderEdit = () => {
     setError("");
     if (item) {
       setEditSlide(item);
-      const { type, title, videoUrl, published, image } = item;
+      const { type, title, videoUrl, videoEmbed, published, image } = item;
       setFormValue({
         type: type || "image",
         title: title || "",
         videoUrl: videoUrl || "",
+        videoEmbed: videoEmbed || "",
         published: !!published,
         image: image || null,
       });
@@ -67,6 +70,7 @@ const SliderEdit = () => {
         type: "image",
         title: "",
         videoUrl: "",
+        videoEmbed: "",
         published: false,
         image: null,
       });
@@ -219,10 +223,11 @@ const SliderEdit = () => {
               </div>
             )}
             <Form.Group>
-              <Form.ControlLabel>Тип</Form.ControlLabel>
+              <Form.ControlLabel>Тип слайду</Form.ControlLabel>
               <Form.Control
                 name="type"
-                accepter="select"
+                accepter={SelectPicker}
+                searchable={false}
                 data={[
                   { label: "Зображення", value: "image" },
                   { label: "Відео", value: "video" },
@@ -231,8 +236,10 @@ const SliderEdit = () => {
                 onChange={(val) =>
                   setFormValue((prev) => ({ ...prev, type: val }))
                 }
+                block
               />
             </Form.Group>
+
             <Form.Group>
               <Form.ControlLabel>Заголовок</Form.ControlLabel>
               <Form.Control
@@ -244,16 +251,32 @@ const SliderEdit = () => {
               />
             </Form.Group>
             {formValue.type === "video" && (
-              <Form.Group>
-                <Form.ControlLabel>URL відео (YouTube)</Form.ControlLabel>
-                <Form.Control
-                  name="videoUrl"
-                  value={formValue.videoUrl}
-                  onChange={(val) =>
-                    setFormValue((prev) => ({ ...prev, videoUrl: val }))
-                  }
-                />
-              </Form.Group>
+              <>
+                <Form.Group>
+                  <Form.ControlLabel>URL відео (YouTube)</Form.ControlLabel>
+                  <Form.Control
+                    name="videoUrl"
+                    value={formValue.videoUrl}
+                    onChange={(val) =>
+                      setFormValue((prev) => ({ ...prev, videoUrl: val }))
+                    }
+                  />
+                </Form.Group>
+                <Form.Group>
+                  <Form.ControlLabel>
+                    Код для вставки (iframe embed)
+                  </Form.ControlLabel>
+                  <Form.Control
+                    name="videoEmbed"
+                    accepter="textarea"
+                    rows={4}
+                    value={formValue.videoEmbed}
+                    onChange={(val) =>
+                      setFormValue((prev) => ({ ...prev, videoEmbed: val }))
+                    }
+                  />
+                </Form.Group>
+              </>
             )}
             {formValue.type === "image" && (
               <Form.Group>
@@ -261,6 +284,7 @@ const SliderEdit = () => {
                   Завантажити нове зображення
                 </Form.ControlLabel>
                 <Uploader
+                  action="#"
                   autoUpload={false}
                   onChange={(fileList) => setImageFile(fileList[0]?.blobFile)}
                 />

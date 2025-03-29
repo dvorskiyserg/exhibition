@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { Button } from "rsuite";
@@ -8,19 +8,46 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "../styles/slider.css";
 
-import img1 from "../assets/slider/1.jpg";
-import img2 from "../assets/slider/2.jpg";
-import img3 from "../assets/slider/3.jpg";
 import logoCircle from "../assets/slider/makosh_logo_circle.png";
+import API from "../api/axiosInstance";
 
-// Масив зображень
-const slides = [
-  { type: "image", src: img1 },
-  { type: "image", src: img2 },
-  { type: "image", src: img3 },
-];
+const getYouTubeId = (url) => {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : null;
+};
 
 const Slider = () => {
+  const [slides, setSlides] = useState([]);
+
+  useEffect(() => {
+    const fetchSlides = async () => {
+      try {
+        const res = await API.get("/slider-items?populate=image", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+        });
+        const fetched = res.data?.data || [];
+        const normalized = fetched
+          .filter((item) => item.published)
+          .map((item) => {
+            const { type, videoUrl, image } = item;
+            const imgUrl =
+              image?.data?.attributes?.url &&
+              `${process.env.REACT_APP_STRAPI_URL}${image.data.attributes.url}`;
+            return {
+              type,
+              src: type === "video" ? videoUrl : imgUrl,
+            };
+          });
+        setSlides(normalized);
+      } catch (error) {
+        console.error("Не вдалося отримати слайди", error);
+      }
+    };
+
+    fetchSlides();
+  }, []);
+
   return (
     <div className="slider-container" style={{ position: "relative" }}>
       <Swiper
@@ -42,23 +69,36 @@ const Slider = () => {
                   className="slider-image"
                 />
               ) : (
-                <video
-                  className="slider-video"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  src={slide.src}
-                />
+                <div
+                  className="slider-video-container"
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  {getYouTubeId(slide.src) ? (
+                    <iframe
+                      className="responsive-iframe"
+                      width="100%"
+                      height="100%"
+                      src={`https://www.youtube.com/embed/${getYouTubeId(
+                        slide.src
+                      )}?autoplay=1&mute=1&loop=1&playlist=${getYouTubeId(
+                        slide.src
+                      )}`}
+                      title={`Video Slide ${index + 1}`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      style={{ objectFit: "cover" }}
+                    ></iframe>
+                  ) : (
+                    <p>Невірний YouTube URL</p>
+                  )}
+                </div>
               )}
-              {/* Можна залишити затемнення для ефекту */}
               <div className="slider-overlay"></div>
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
 
-      {/* Статичний overlay, який залишається на місці */}
       <div
         className="slider-overlay-content"
         style={{
@@ -72,7 +112,7 @@ const Slider = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          pointerEvents: "none", // Щоб overlay не блокував кліки по слайдеру (якщо потрібно, можна додати pointerEvents: 'auto' для кнопок)"
+          pointerEvents: "none",
         }}
       >
         <img
@@ -81,9 +121,6 @@ const Slider = () => {
           className="slider-logo"
           style={{ marginBottom: "20px" }}
         />
-        {/* <h2 className="slider-title" style={{ pointerEvents: "auto" }}>
-          Ваш заголовок
-        </h2> */}
         <div
           className="slider-buttons"
           style={{ marginTop: "20px", pointerEvents: "auto" }}

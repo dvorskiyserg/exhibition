@@ -1,46 +1,70 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Button } from "rsuite";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-
-const newsItems = [
-  {
-    id: 1,
-    title: "Відродження традицій у сучасному текстилі",
-    description:
-      "Українські дизайнери представлять нову колекцію одягу та аксесуарів, створених із використанням традиційних технік вишивки та ткацтва.",
-    image: `${process.env.PUBLIC_URL}/news/news1.jpg`,
-    link: "#",
-  },
-  {
-    id: 2,
-    title: "Еко-продукція: від українських виробників",
-    description:
-      "На виставці буде представлено широкий вибір натуральних продуктів, косметики та екологічних товарів для дому.",
-    image: `${process.env.PUBLIC_URL}/news/news2.jpg`,
-    link: "#",
-  },
-  {
-    id: 3,
-    title: "Майстер-класи від кращих гончарів України",
-    description:
-      "Гончарне мистецтво – це давня українська традиція, яка зберігається до сьогодні.",
-    image: `${process.env.PUBLIC_URL}/news/news3.jpg`,
-    link: "#",
-  },
-  {
-    id: 4,
-    title: "Вишивка як мистецтво: експозиція рідкісних візерунків",
-    description: "Окрему зону виставки буде присвячено українській вишивці.",
-    image: `${process.env.PUBLIC_URL}/news/news4.jpg`,
-    link: "#",
-  },
-];
+import { useAuth } from "../context/AuthContext";
+import API from "../api/axiosInstance";
 
 const NewsSlider = () => {
+  const { user } = useAuth();
+  const [newsItems, setNewsItems] = useState([]);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const res = await API.get("/news-lists?populate=image", {
+          headers: { Authorization: `Bearer ${user.jwt}` },
+        });
+        const items =
+          res.data?.data.map((item) => ({
+            id: item.id,
+            title:
+              item.title || (item.attributes && item.attributes.title) || "",
+            content:
+              item.content ||
+              (item.attributes && item.attributes.content) ||
+              "",
+            image: item.image
+              ? `http://localhost:1337${item.image.url}`
+              : item.attributes && item.attributes.image
+              ? `http://localhost:1337${item.attributes.image.url}`
+              : "",
+            link: "#",
+          })) || [];
+        setNewsItems(items);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchNews();
+  }, [user]);
+
+  const getPreviewText = (content) => {
+    if (Array.isArray(content)) {
+      return content
+        .map((block) =>
+          block.children
+            ? block.children.map((child) => child.text).join(" ")
+            : ""
+        )
+        .join(" ")
+        .slice(0, 100);
+    } else if (typeof content === "object" && content !== null) {
+      return content.children
+        ? content.children
+            .map((child) => child.text)
+            .join(" ")
+            .slice(0, 100)
+        : "";
+    } else if (typeof content === "string") {
+      return content.slice(0, 100);
+    }
+    return "—";
+  };
+
   return (
     <div style={{ padding: "50px 0", backgroundColor: "#fff" }}>
       <div
@@ -70,7 +94,7 @@ const NewsSlider = () => {
                 />
                 <Card.Body>
                   <h5 style={{ marginBottom: "5px" }}>{news.title}</h5>
-                  <p>{news.description}</p>
+                  <p>{getPreviewText(news.content)}</p>
                   <a href={news.link} style={{ color: "#f90" }}>
                     Детальніше &gt;
                   </a>

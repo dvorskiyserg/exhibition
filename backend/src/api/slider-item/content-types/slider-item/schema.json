@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "slider_items",
+  "info": {
+    "singularName": "slider-item",
+    "pluralName": "slider-items",
+    "displayName": "SliderItem",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "image",
+        "video"
+      ]
+    },
+    "videoUrl": {
+      "type": "string"
+    },
+    "image": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "published": {
+      "type": "boolean"
+    }
+  }
+}
