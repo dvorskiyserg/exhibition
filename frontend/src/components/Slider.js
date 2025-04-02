@@ -10,17 +10,7 @@ import "../styles/slider.css";
 
 import logoCircle from "../assets/slider/makosh_logo_circle.png";
 
-const getYouTubeId = (url) => {
-  if (!url) return null;
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-  const match = url.match(regExp);
-  return match && match[2].length === 11 ? match[2] : null;
-};
-
 const Slider = () => {
-  const videoUrl = "https://www.youtube.com/watch?v=ynQbwkVRo3I";
-  const videoId = getYouTubeId(videoUrl);
-
   return (
     <div className="slider-container" style={{ position: "relative" }}>
       <Swiper
@@ -36,18 +26,14 @@ const Slider = () => {
           <div className="slider-item">
             <iframe
               className="responsive-iframe"
-              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`}
-              title="Demo Slide"
+              src="https://www.youtube.com/embed/ynQbwkVRo3I?autoplay=1&mute=1&loop=1&playlist=ynQbwkVRo3I"
+              title="Demo Video Slide"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               style={{
-                objectFit: "cover",
-                width: "200vw",
-                height: "200vh",
-                position: "absolute",
-                top: "-50vw",
-                left: "-50vw",
-                border: 0,
+                left: "50%",
+                minWidth: "100vw",
+                minHeight: "100vh",
               }}
             ></iframe>
             <div className="slider-overlay"></div>
@@ -69,7 +55,6 @@ const Slider = () => {
           alignItems: "center",
           justifyContent: "center",
           pointerEvents: "none",
-          marginTop: -150,
         }}
       >
         <img

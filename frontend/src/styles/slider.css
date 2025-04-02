@@ -24,13 +24,27 @@
     opacity: 50%;
   }
 
-/* .slider-iframe-container iframe {
-  width: 100vw !important;
-  height: 100vh !important;
-  object-fit: cover;
+.responsive-iframe {
   position: absolute;
-  top: 0;
-  left: 0;
-  border: none;
-} */
-  
+  transform: translateX(-50%);
+  border: 0px;
+  object-fit: cover;
+  z-index: 1;
+  left: 50%;
+  min-width: 100vw;
+  min-height: 100vh;
+  width: 400%;
+  height: 200%;
+}
+
+
+  @media (max-width: 768px) {
+.responsive-iframe {
+  width: 1654.4px !important;
+  height: 705.6px !important;
+  left: 50% !important;
+  top: 50% !important;
+  position: absolute;
+  transform: translate(-50%,-50%) !important;
+  border: 0 !important;
+}}
