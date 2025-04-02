@@ -10,6 +10,7 @@ import {
   Uploader,
   SelectPicker,
 } from "rsuite";
+import { Input } from "rsuite";
 import { useAuth } from "../../context/AuthContext";
 import API from "../../api/axiosInstance";
 
@@ -54,8 +55,8 @@ const SliderEdit = () => {
     setSuccess("");
     setError("");
     if (item) {
-      setEditSlide(item);
       const { type, title, videoUrl, videoEmbed, published, image } = item;
+      setEditSlide(item);
       setFormValue({
         type: type || "image",
         title: title || "",
@@ -103,12 +104,23 @@ const SliderEdit = () => {
       }
     }
 
-    const payload = {
-      data: {
-        ...formValue,
-        image: formValue.type === "image" ? uploadedImage?.id || null : null,
-      },
+    const baseData = {
+      ...formValue,
+      videoEmbed: formValue.videoEmbed || undefined,
+      videoUrl: formValue.videoUrl || undefined,
     };
+
+    if (formValue.type === "image" && uploadedImage?.id) {
+      baseData.image = uploadedImage.id;
+    }
+
+    Object.keys(baseData).forEach((key) => {
+      if (baseData[key] === undefined) {
+        delete baseData[key];
+      }
+    });
+
+    const payload = { data: baseData };
 
     try {
       if (editSlide && editSlide.locale && editSlide.documentId) {
@@ -141,15 +153,30 @@ const SliderEdit = () => {
       fetchSlides();
     } catch (err) {
       setError("Помилка при збереженні слайда");
+      console.log("Payload для Strapi:", payload);
+      console.log("Strapi error:", err.response?.data);
     }
   };
 
-  const getTypeLabel = (type) => (type === "image" ? "Зображення" : "Відео");
+  const getTypeLabel = (type) => {
+    if (type === "image") return "Зображення";
+    if (type === "video") return "Відео";
+    if (type === "iframe") return "iframe";
+    return type;
+  };
 
   return (
     <Panel header="Редагування слайдів" bordered>
-      {error && <Message type="error">{error}</Message>}
-      {success && <Message type="success">{success}</Message>}
+      {error && (
+        <Message className="inside-message" type="error">
+          {error}
+        </Message>
+      )}
+      {success && (
+        <Message className="inside-message" type="success">
+          {success}
+        </Message>
+      )}
 
       <Button
         appearance="primary"
@@ -231,6 +258,7 @@ const SliderEdit = () => {
                 data={[
                   { label: "Зображення", value: "image" },
                   { label: "Відео", value: "video" },
+                  { label: "iframe", value: "iframe" },
                 ]}
                 value={formValue.type}
                 onChange={(val) =>
@@ -250,34 +278,34 @@ const SliderEdit = () => {
                 }
               />
             </Form.Group>
+
             {formValue.type === "video" && (
-              <>
-                <Form.Group>
-                  <Form.ControlLabel>URL відео (YouTube)</Form.ControlLabel>
-                  <Form.Control
-                    name="videoUrl"
-                    value={formValue.videoUrl}
-                    onChange={(val) =>
-                      setFormValue((prev) => ({ ...prev, videoUrl: val }))
-                    }
-                  />
-                </Form.Group>
-                <Form.Group>
-                  <Form.ControlLabel>
-                    Код для вставки (iframe embed)
-                  </Form.ControlLabel>
-                  <Form.Control
-                    name="videoEmbed"
-                    accepter="textarea"
-                    rows={4}
-                    value={formValue.videoEmbed}
-                    onChange={(val) =>
-                      setFormValue((prev) => ({ ...prev, videoEmbed: val }))
-                    }
-                  />
-                </Form.Group>
-              </>
+              <Form.Group>
+                <Form.ControlLabel>URL відео (YouTube)</Form.ControlLabel>
+                <Form.Control
+                  name="videoUrl"
+                  value={formValue.videoUrl}
+                  onChange={(val) =>
+                    setFormValue((prev) => ({ ...prev, videoUrl: val }))
+                  }
+                />
+              </Form.Group>
             )}
+
+            {formValue.type === "iframe" && (
+              <Form.Group>
+                <Form.ControlLabel>Embed-код (iframe)</Form.ControlLabel>
+                <Input
+                  as="textarea"
+                  rows={5}
+                  value={formValue.videoEmbed}
+                  onChange={(val) =>
+                    setFormValue((prev) => ({ ...prev, videoEmbed: val }))
+                  }
+                />
+              </Form.Group>
+            )}
+
             {formValue.type === "image" && (
               <Form.Group>
                 <Form.ControlLabel>

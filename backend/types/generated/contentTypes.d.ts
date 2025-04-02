@@ -454,10 +454,11 @@ export interface ApiSliderItemSliderItem extends Struct.CollectionTypeSchema {
     published: Schema.Attribute.Boolean;
     publishedAt: Schema.Attribute.DateTime;
     title: Schema.Attribute.String;
-    type: Schema.Attribute.Enumeration<['image', 'video']>;
+    type: Schema.Attribute.Enumeration<['image', 'video', 'iframe']>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    videoEmbed: Schema.Attribute.String;
     videoUrl: Schema.Attribute.String;
   };
 }

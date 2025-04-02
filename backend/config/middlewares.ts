@@ -1,26 +1,28 @@
-export default [
-  'strapi::errors',
-  {
-    name: 'strapi::security',
-    config: {
-      contentSecurityPolicy: false,  // спрощена політика на час розробки
+module.exports = [
+    'strapi::errors',
+    {
+      name: 'strapi::cors',
+      config: {
+        origin: ['http://localhost:3000'],
+        headers: [
+          'Content-Type',
+          'Authorization',
+          'Origin',
+          'Accept',
+          'X-Requested-With',
+          'Access-Control-Allow-Origin',
+        ],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+        credentials: true,
+      },
     },
-  },
-  {
-    name: "strapi::cors",
-    config: {
-      enabled: true,
-      origin: "*", // Дозволити запити з будь-якого джерела (можна вказати конкретні домени)
-      headers: "*", // Дозволити всі заголовки
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Дозволені методи
-      credentials: true,
-    },
-  },
-  'strapi::poweredBy',
-  'strapi::logger',
-  'strapi::query',
-  'strapi::body',
-  'strapi::session',
-  'strapi::favicon',
-  'strapi::public',
-];
+    'strapi::security',
+    'strapi::poweredBy',
+    'strapi::logger',
+    'strapi::query',
+    'strapi::body',
+    'strapi::session',
+    'strapi::favicon',
+    'strapi::public',
+  ];
+  

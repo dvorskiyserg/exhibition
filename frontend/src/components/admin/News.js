@@ -219,8 +219,16 @@ const News = () => {
 
   return (
     <Panel header="Новини" bordered>
-      {error && <Message type="error">{error}</Message>}
-      {success && <Message type="success">{success}</Message>}
+      {error && (
+        <Message className="inside-message" type="error">
+          {error}
+        </Message>
+      )}
+      {success && (
+        <Message className="inside-message" type="success">
+          {success}
+        </Message>
+      )}
 
       <Button appearance="primary" onClick={() => openModal()}>
         Додати новину
