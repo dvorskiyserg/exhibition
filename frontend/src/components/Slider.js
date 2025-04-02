@@ -145,6 +145,7 @@ const Slider = () => {
           alignItems: "center",
           justifyContent: "center",
           pointerEvents: "none",
+          marginTop: -180,
         }}
       >
         <img

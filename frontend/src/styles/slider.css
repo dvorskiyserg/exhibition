@@ -18,6 +18,12 @@
     overflow: hidden;
   }
 
+  .slider-logo {
+    max-width: 160px;
+    margin-bottom: 20px;
+    opacity: 50%;
+  }
+
 /* .slider-iframe-container iframe {
   width: 100vw !important;
   height: 100vh !important;
