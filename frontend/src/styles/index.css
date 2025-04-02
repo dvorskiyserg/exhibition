@@ -299,7 +299,7 @@ body {
 .slider-item {
   position: relative;
   width: 100%;
-  height: 160vh;
+  height: 200vh;
   display: flex;
   justify-content: center;
   align-items: center;
