@@ -26,7 +26,7 @@ const Slider = () => {
           <div className="slider-item">
             <iframe
               className="responsive-iframe"
-              src="https://www.youtube.com/embed/ynQbwkVRo3I?autoplay=1&mute=1&loop=1&playlist=ynQbwkVRo3I"
+              src="https://www.youtube.com/embed/ynQbwkVRo3I?start=7&autoplay=1&mute=1&loop=1&playlist=ynQbwkVRo3I"
               title="Demo Video Slide"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -55,6 +55,7 @@ const Slider = () => {
           alignItems: "center",
           justifyContent: "center",
           pointerEvents: "none",
+          marginTop: -180,
         }}
       >
         <img

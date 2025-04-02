@@ -40,10 +40,9 @@
 
   @media (max-width: 768px) {
 .responsive-iframe {
-  width: 1654.4px !important;
-  height: 705.6px !important;
+  width: 1700px;
+  height: 700px;
   left: 50% !important;
-  top: 50% !important;
   position: absolute;
   transform: translate(-50%,-50%) !important;
   border: 0 !important;

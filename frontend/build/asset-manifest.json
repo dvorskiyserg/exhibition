@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/exhibition/static/css/main.be8d13ce.css",
-    "main.js": "/exhibition/static/js/main.6c7b6a66.js",
+    "main.css": "/exhibition/static/css/main.e5d1eaf5.css",
+    "main.js": "/exhibition/static/js/main.f5ba7b57.js",
     "static/js/453.d855a71b.chunk.js": "/exhibition/static/js/453.d855a71b.chunk.js",
     "static/media/makosh_logo_circle.png": "/exhibition/static/media/makosh_logo_circle.abae178ad8ae0eb416c4.png",
     "static/media/header-bg.jpg": "/exhibition/static/media/header-bg.bb88ccce6493f9a2bcb9.jpg",
     "static/media/logo.png": "/exhibition/static/media/logo.a8ac1bb8ce10db773ff8.png",
     "static/media/logo-mini.png": "/exhibition/static/media/logo-mini.3457d5040061cf61acfb.png",
     "index.html": "/exhibition/index.html",
-    "main.be8d13ce.css.map": "/exhibition/static/css/main.be8d13ce.css.map",
-    "main.6c7b6a66.js.map": "/exhibition/static/js/main.6c7b6a66.js.map",
+    "main.e5d1eaf5.css.map": "/exhibition/static/css/main.e5d1eaf5.css.map",
+    "main.f5ba7b57.js.map": "/exhibition/static/js/main.f5ba7b57.js.map",
     "453.d855a71b.chunk.js.map": "/exhibition/static/js/453.d855a71b.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.be8d13ce.css",
-    "static/js/main.6c7b6a66.js"
+    "static/css/main.e5d1eaf5.css",
+    "static/js/main.f5ba7b57.js"
   ]
 }
