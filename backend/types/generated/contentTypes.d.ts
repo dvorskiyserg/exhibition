@@ -451,6 +451,9 @@ export interface ApiSliderItemSliderItem extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::slider-item.slider-item'
     >;
+    order: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<0>;
     published: Schema.Attribute.Boolean;
     publishedAt: Schema.Attribute.DateTime;
     title: Schema.Attribute.String;

@@ -2,19 +2,63 @@ import React, { useEffect, useState } from "react";
 import {
   Panel,
   Button,
-  Table,
   Modal,
   Form,
   Message,
   Toggle,
   Uploader,
   SelectPicker,
+  Input,
 } from "rsuite";
-import { Input } from "rsuite";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { useAuth } from "../../context/AuthContext";
 import API from "../../api/axiosInstance";
 
-const { Column, HeaderCell, Cell } = Table;
+const type = "row";
+
+const DraggableRow = ({ slide, index, moveRow, onEdit }) => {
+  const ref = React.useRef(null);
+
+  const [, drop] = useDrop({
+    accept: type,
+    hover(item) {
+      if (item.index === index) return;
+      moveRow(item.index, index);
+      item.index = index;
+    },
+  });
+
+  const [{ isDragging }, drag] = useDrag({
+    type,
+    item: { index },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  drag(drop(ref));
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+        padding: 10,
+        borderBottom: "1px solid #eee",
+        background: "#fff",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <span>{slide.title}</span>
+      <Button size="xs" appearance="link" onClick={() => onEdit(slide)}>
+        Редагувати
+      </Button>
+    </div>
+  );
+};
 
 const SliderEdit = () => {
   const { user } = useAuth();
@@ -36,7 +80,7 @@ const SliderEdit = () => {
 
   const fetchSlides = async () => {
     try {
-      const res = await API.get("/slider-items?populate=image", {
+      const res = await API.get("/slider-items?populate=image&sort=order:asc", {
         headers: { Authorization: `Bearer ${user.jwt}` },
       });
       setSlides(res.data?.data || []);
@@ -50,6 +94,30 @@ const SliderEdit = () => {
   useEffect(() => {
     fetchSlides();
   }, []);
+
+  const moveRow = (fromIndex, toIndex) => {
+    const updated = [...slides];
+    const [moved] = updated.splice(fromIndex, 1);
+    updated.splice(toIndex, 0, moved);
+    setSlides(updated);
+  };
+
+  const saveOrder = async () => {
+    try {
+      await Promise.all(
+        slides.map((slide, index) =>
+          API.put(
+            `/slider-items/${slide.id}`,
+            { data: { order: index } },
+            { headers: { Authorization: `Bearer ${user.jwt}` } }
+          )
+        )
+      );
+      setSuccess("Порядок оновлено успішно");
+    } catch (err) {
+      setError("Не вдалося оновити порядок");
+    }
+  };
 
   const openModal = (item = null) => {
     setSuccess("");
@@ -108,11 +176,11 @@ const SliderEdit = () => {
       ...formValue,
       videoEmbed: formValue.videoEmbed || undefined,
       videoUrl: formValue.videoUrl || undefined,
+      image:
+        formValue.type === "image" && uploadedImage?.id
+          ? uploadedImage.id
+          : null,
     };
-
-    if (formValue.type === "image" && uploadedImage?.id) {
-      baseData.image = uploadedImage.id;
-    }
 
     Object.keys(baseData).forEach((key) => {
       if (baseData[key] === undefined) {
@@ -123,26 +191,11 @@ const SliderEdit = () => {
     const payload = { data: baseData };
 
     try {
-      if (editSlide && editSlide.locale && editSlide.documentId) {
-        try {
-          await API.put(
-            `/slider-items/${editSlide.documentId}?locale=${editSlide.locale}`,
-            payload,
-            { headers: { Authorization: `Bearer ${user.jwt}` } }
-          );
-          setSuccess("Слайд оновлено успішно");
-        } catch (err) {
-          if (err.response?.status === 404) {
-            await API.post(
-              `/slider-items/${editSlide.documentId}/localizations?locale=${editSlide.locale}`,
-              payload,
-              { headers: { Authorization: `Bearer ${user.jwt}` } }
-            );
-            setSuccess("Локалізацію створено успішно");
-          } else {
-            throw err;
-          }
-        }
+      if (editSlide && editSlide.id) {
+        await API.put(`/slider-items/${editSlide.id}`, payload, {
+          headers: { Authorization: `Bearer ${user.jwt}` },
+        });
+        setSuccess("Слайд оновлено успішно");
       } else {
         await API.post("/slider-items", payload, {
           headers: { Authorization: `Bearer ${user.jwt}` },
@@ -153,30 +206,13 @@ const SliderEdit = () => {
       fetchSlides();
     } catch (err) {
       setError("Помилка при збереженні слайда");
-      console.log("Payload для Strapi:", payload);
-      console.log("Strapi error:", err.response?.data);
     }
-  };
-
-  const getTypeLabel = (type) => {
-    if (type === "image") return "Зображення";
-    if (type === "video") return "Відео";
-    if (type === "iframe") return "iframe";
-    return type;
   };
 
   return (
     <Panel header="Редагування слайдів" bordered>
-      {error && (
-        <Message className="inside-message" type="error">
-          {error}
-        </Message>
-      )}
-      {success && (
-        <Message className="inside-message" type="success">
-          {success}
-        </Message>
-      )}
+      {error && <Message type="error">{error}</Message>}
+      {success && <Message type="success">{success}</Message>}
 
       <Button
         appearance="primary"
@@ -185,40 +221,23 @@ const SliderEdit = () => {
       >
         Додати слайд
       </Button>
+      <Button onClick={saveOrder} appearance="ghost" style={{ marginLeft: 10 }}>
+        Зберегти порядок
+      </Button>
 
-      <Table
-        autoHeight
-        data={slides}
-        loading={loading}
-        style={{ marginTop: 20 }}
-      >
-        <Column width={80} align="center">
-          <HeaderCell>Тип</HeaderCell>
-          <Cell>{(rowData) => getTypeLabel(rowData.type)}</Cell>
-        </Column>
-        <Column flexGrow={2}>
-          <HeaderCell>Заголовок</HeaderCell>
-          <Cell dataKey="title" />
-        </Column>
-        <Column width={120} align="center">
-          <HeaderCell>Опубліковано</HeaderCell>
-          <Cell>{(rowData) => (rowData.published ? "Так" : "Ні")}</Cell>
-        </Column>
-        <Column width={100} align="center">
-          <HeaderCell>Дії</HeaderCell>
-          <Cell>
-            {(rowData) => (
-              <Button
-                size="xs"
-                appearance="link"
-                onClick={() => openModal(rowData)}
-              >
-                Редагувати
-              </Button>
-            )}
-          </Cell>
-        </Column>
-      </Table>
+      <DndProvider backend={HTML5Backend}>
+        <div style={{ marginTop: 20 }}>
+          {slides.map((slide, index) => (
+            <DraggableRow
+              key={slide.id}
+              index={index}
+              slide={slide}
+              moveRow={moveRow}
+              onEdit={openModal}
+            />
+          ))}
+        </div>
+      </DndProvider>
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} size="md">
         <Modal.Header>
@@ -249,6 +268,7 @@ const SliderEdit = () => {
                 </Button>
               </div>
             )}
+
             <Form.Group>
               <Form.ControlLabel>Тип слайду</Form.ControlLabel>
               <Form.Control
@@ -318,6 +338,7 @@ const SliderEdit = () => {
                 />
               </Form.Group>
             )}
+
             <Form.Group>
               <Form.ControlLabel>Опубліковано</Form.ControlLabel>
               <Toggle
