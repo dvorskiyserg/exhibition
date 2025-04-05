@@ -434,7 +434,7 @@ export interface ApiSliderItemSliderItem extends Struct.CollectionTypeSchema {
     singularName: 'slider-item';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   pluginOptions: {
     i18n: {

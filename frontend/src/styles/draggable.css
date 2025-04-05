@@ -1,0 +1,26 @@
+.draggable-row {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    cursor: grab;
+    transition: background 0.2s;
+  }
+  
+  .draggable-row.dragging {
+    opacity: 0.5;
+  }
+  
+  .drop-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #ffa800;
+    z-index: 1;
+  }
+  

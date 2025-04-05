@@ -26,18 +26,18 @@ function DraggableRow({ children, rowData, onDrag }) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.ROW,
     item: { id: rowData.documentId },
-    collect: (monitor) => ({
+    collect: monitor => ({
       isDragging: monitor.isDragging(),
-    }),
+    })
   }));
 
   const [{ isOver, canDrop }, drop] = useDrop(() => ({
     accept: ItemTypes.ROW,
     drop: (item) => onDrag?.(item.id, rowData.documentId),
-    collect: (monitor) => ({
+    collect: monitor => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
-    }),
+    })
   }));
 
   drag(drop(ref));
@@ -135,14 +135,7 @@ const SliderEdit = () => {
       });
     } else {
       setEditSlide(null);
-      setFormValue({
-        type: "image",
-        title: "",
-        videoUrl: "",
-        videoEmbed: "",
-        published: false,
-        image: null,
-      });
+      setFormValue({ type: "image", title: "", videoUrl: "", videoEmbed: "", published: false, image: null });
     }
     setModalOpen(true);
   };
@@ -176,13 +169,9 @@ const SliderEdit = () => {
 
     try {
       if (editSlide?.documentId) {
-        await API.put(
-          `/slider-items/documentId/${editSlide.documentId}`,
-          payload,
-          {
-            headers: { Authorization: `Bearer ${user.jwt}` },
-          }
-        );
+        await API.put(`/slider-items/documentId/${editSlide.documentId}`, payload, {
+          headers: { Authorization: `Bearer ${user.jwt}` },
+        });
         setSuccess("Слайд оновлено успішно");
       } else {
         await API.post("/slider-items", payload, {
@@ -199,10 +188,18 @@ const SliderEdit = () => {
 
   const handleDelete = async (slide) => {
     try {
-      await API.delete(`/slider-items/${slide.id}`, {
+      const res = await API.get(`/slider-items?filters[documentId][$eq]=${slide.documentId}`, {
         headers: { Authorization: `Bearer ${user.jwt}` },
       });
-      fetchSlides();
+      const realId = res.data?.data?.[0]?.id;
+      if (realId) {
+        await API.delete(`/slider-items/${realId}`, {
+          headers: { Authorization: `Bearer ${user.jwt}` },
+        });
+        fetchSlides();
+      } else {
+        setError("Не вдалося знайти слайд для видалення");
+      }
     } catch {
       setError("Не вдалося видалити слайд");
     }
@@ -213,11 +210,7 @@ const SliderEdit = () => {
       {error && <Message type="error">{error}</Message>}
       {success && <Message type="success">{success}</Message>}
 
-      <Button
-        appearance="primary"
-        onClick={() => openModal()}
-        style={{ marginBottom: 15 }}
-      >
+      <Button appearance="primary" onClick={() => openModal()} style={{ marginBottom: 15 }}>
         Додати слайд
       </Button>
 
@@ -230,11 +223,7 @@ const SliderEdit = () => {
           renderRow={(children, rowData) => {
             if (!rowData) return children;
             return (
-              <DraggableRow
-                key={rowData.documentId}
-                rowData={rowData}
-                onDrag={moveRow}
-              >
+              <DraggableRow key={rowData.documentId} rowData={rowData} onDrag={moveRow}>
                 {children}
               </DraggableRow>
             );
@@ -245,11 +234,7 @@ const SliderEdit = () => {
             <Cell>
               {(rowData) =>
                 rowData.image ? (
-                  <img
-                    src={`http://localhost:1337${rowData.image.url}`}
-                    alt=""
-                    style={{ height: 40 }}
-                  />
+                  <img src={`http://localhost:1337${rowData.image.url}`} alt="" style={{ height: 40 }} />
                 ) : (
                   "-"
                 )
@@ -300,24 +285,16 @@ const SliderEdit = () => {
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} size="md">
         <Modal.Header>
-          <Modal.Title>
-            {editSlide ? "Редагувати слайд" : "Додати слайд"}
-          </Modal.Title>
+          <Modal.Title>{editSlide ? "Редагувати слайд" : "Додати слайд"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form fluid>
             {formValue.type === "image" && (formValue.image || previewUrl) && (
               <div style={{ marginBottom: 15 }}>
                 <img
-                  src={
-                    previewUrl || `http://localhost:1337${formValue.image?.url}`
-                  }
+                  src={previewUrl || `http://localhost:1337${formValue.image?.url}`}
                   alt="Preview"
-                  style={{
-                    width: "100%",
-                    maxHeight: 200,
-                    objectFit: "contain",
-                  }}
+                  style={{ width: "100%", maxHeight: 200, objectFit: "contain" }}
                 />
               </div>
             )}
@@ -328,15 +305,13 @@ const SliderEdit = () => {
                 name="type"
                 accepter={SelectPicker}
                 searchable={false}
-                data={[
+                data=[
                   { label: "Зображення", value: "image" },
                   { label: "Відео", value: "video" },
                   { label: "iframe", value: "iframe" },
-                ]}
+                ]
                 value={formValue.type}
-                onChange={(val) =>
-                  setFormValue((prev) => ({ ...prev, type: val }))
-                }
+                onChange={(val) => setFormValue((prev) => ({ ...prev, type: val }))}
                 block
               />
             </Form.Group>
@@ -346,9 +321,7 @@ const SliderEdit = () => {
               <Form.Control
                 name="title"
                 value={formValue.title}
-                onChange={(val) =>
-                  setFormValue((prev) => ({ ...prev, title: val }))
-                }
+                onChange={(val) => setFormValue((prev) => ({ ...prev, title: val }))}
               />
             </Form.Group>
 
@@ -358,9 +331,7 @@ const SliderEdit = () => {
                 <Form.Control
                   name="videoUrl"
                   value={formValue.videoUrl}
-                  onChange={(val) =>
-                    setFormValue((prev) => ({ ...prev, videoUrl: val }))
-                  }
+                  onChange={(val) => setFormValue((prev) => ({ ...prev, videoUrl: val }))}
                 />
               </Form.Group>
             )}
@@ -372,9 +343,7 @@ const SliderEdit = () => {
                   as="textarea"
                   rows={5}
                   value={formValue.videoEmbed}
-                  onChange={(val) =>
-                    setFormValue((prev) => ({ ...prev, videoEmbed: val }))
-                  }
+                  onChange={(val) => setFormValue((prev) => ({ ...prev, videoEmbed: val }))}
                 />
               </Form.Group>
             )}
@@ -401,9 +370,7 @@ const SliderEdit = () => {
               <Form.ControlLabel>Опубліковано</Form.ControlLabel>
               <Toggle
                 checked={formValue.published}
-                onChange={(val) =>
-                  setFormValue((prev) => ({ ...prev, published: val }))
-                }
+                onChange={(val) => setFormValue((prev) => ({ ...prev, published: val }))}
               />
             </Form.Group>
           </Form>
