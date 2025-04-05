@@ -17,6 +17,7 @@ import { useAuth } from "../../context/AuthContext";
 import API from "../../api/axiosInstance";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import "../../styles/draggable.css";
 
 const { Column, HeaderCell, Cell } = Table;
 const ItemTypes = { ROW: "row" };
@@ -42,14 +43,11 @@ function DraggableRow({ children, rowData, onDrag }) {
 
   drag(drop(ref));
 
+  const isActive = canDrop && isOver;
+
   return (
-    <div
-      ref={ref}
-      style={{
-        background: isOver ? "#e6f7ff" : undefined,
-        opacity: isDragging ? 0.5 : 1,
-      }}
-    >
+    <div ref={ref} className={`draggable-row${isDragging ? " dragging" : ""}`}>
+      {isActive && <div className="drop-indicator" />}
       {children}
     </div>
   );

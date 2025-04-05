@@ -38,10 +38,13 @@ const Slider = () => {
   useEffect(() => {
     const fetchSlides = async () => {
       try {
-        const res = await API.get("/slider-items?populate=image");
+        const res = await API.get(
+          "/slider-items?populate=image&sort=order:asc"
+        );
         const fetched = res.data?.data || [];
         const normalized = fetched
           .filter((item) => item.published)
+          .sort((a, b) => (a.order || 0) - (b.order || 0))
           .map((item) => {
             const { type, videoUrl, videoEmbed, image } = item;
             const imgUrl = image?.url || image?.data?.url;
