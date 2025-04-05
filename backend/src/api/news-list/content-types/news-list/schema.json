@@ -55,6 +55,10 @@
           "localized": true
         }
       }
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
     }
   }
 }

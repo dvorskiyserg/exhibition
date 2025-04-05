@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Panel,
   Button,
@@ -13,8 +13,59 @@ import { useAuth } from "../../context/AuthContext";
 import API from "../../api/axiosInstance";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import "../../styles/draggable.css";
 
 const { Column, HeaderCell, Cell } = Table;
+const ItemTypes = { ROW: "row" };
+
+function DraggableRow({ children, rowData, onDrag }) {
+  const ref = useRef(null);
+  const hasDroppedRef = useRef(false);
+
+  const [{ isDragging }, drag] = useDrag(
+    () => ({
+      type: ItemTypes.ROW,
+      item: { id: rowData.documentId },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+    }),
+    [rowData.documentId]
+  );
+
+  const [{ isOver, canDrop }, drop] = useDrop(
+    () => ({
+      accept: ItemTypes.ROW,
+      drop: (item) => {
+        if (!hasDroppedRef.current) {
+          onDrag?.(item.id, rowData.documentId);
+          hasDroppedRef.current = true;
+          setTimeout(() => {
+            hasDroppedRef.current = false;
+          }, 200);
+        }
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      }),
+    }),
+    [rowData.documentId]
+  );
+
+  drag(drop(ref));
+
+  const isActive = canDrop && isOver;
+
+  return (
+    <div ref={ref} className={`draggable-row${isDragging ? " dragging" : ""}`}>
+      {isActive && <div className="drop-indicator" />}
+      {children}
+    </div>
+  );
+}
 
 const News = () => {
   const { user } = useAuth();
@@ -26,25 +77,18 @@ const News = () => {
   const [editItem, setEditItem] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
-  // Дані форми
   const [formValue, setFormValue] = useState({
     title: "",
     content: "",
     published: false,
-    image: null, // збережене зображення (url, id тощо)
+    image: null,
   });
 
-  // ----------------------------------
-  // 1) Завантажуємо список новин
-  // ----------------------------------
   const fetchNews = async () => {
     try {
-      const res = await API.get("/news-lists?populate=image", {
+      const res = await API.get("/news-lists?populate=image&sort=order:asc", {
         headers: { Authorization: `Bearer ${user.jwt}` },
       });
-      // Якщо Strapi повертає структуру без attributes
-      // то кожен елемент виглядає приблизно так:
-      // { id, title, content, image: { id, url }, published, locale, documentId, ... }
       setNews(res.data?.data || []);
     } catch (err) {
       console.error(err);
@@ -58,9 +102,6 @@ const News = () => {
     fetchNews();
   }, []);
 
-  // ----------------------------------
-  // 2) Робота з Rich Text (Quill)
-  // ----------------------------------
   const blocksToHtml = (blocks) => {
     if (!Array.isArray(blocks)) return blocks || "";
     return blocks
@@ -83,25 +124,47 @@ const News = () => {
     }));
   };
 
-  // ----------------------------------
-  // 3) Відкриття/закриття модалки
-  // ----------------------------------
+  const updateOrder = async (newData) => {
+    setNews(newData);
+    try {
+      await Promise.all(
+        newData.map((item, index) =>
+          API.put(
+            `/news-lists/${item.documentId}`,
+            { data: { order: index } },
+            { headers: { Authorization: `Bearer ${user.jwt}` } }
+          )
+        )
+      );
+    } catch {
+      setError("Не вдалося оновити порядок новин");
+    }
+  };
+
+  const moveRow = (dragId, hoverId) => {
+    const dragIndex = news.findIndex((i) => i.documentId === dragId);
+    const hoverIndex = news.findIndex((i) => i.documentId === hoverId);
+    if (dragIndex === -1 || hoverIndex === -1) return;
+    const newData = [...news];
+    const [dragRow] = newData.splice(dragIndex, 1);
+    newData.splice(hoverIndex, 0, dragRow);
+    updateOrder(newData);
+  };
+
   const openModal = (item = null) => {
     setSuccess("");
     setError("");
 
     if (item) {
-      // Редагуємо
       setEditItem(item);
       const { title, content, published, image } = item;
       setFormValue({
         title: title || "",
         content: blocksToHtml(content),
         published: !!published,
-        image: image || null, // Якщо зображення є, збережемо об'єкт { id, url, ... }
+        image: image || null,
       });
     } else {
-      // Нова новина
       setEditItem(null);
       setFormValue({
         title: "",
@@ -110,38 +173,25 @@ const News = () => {
         image: null,
       });
     }
-    setImageFile(null); // Скидаємо файл
+    setImageFile(null);
     setModalOpen(true);
   };
 
-  // ----------------------------------
-  // 4) Завантаження зображення на сервер
-  // ----------------------------------
   const handleImageUpload = async (file) => {
     const formData = new FormData();
     formData.append("files", file);
-
     const uploadRes = await API.post("/upload", formData, {
       headers: { Authorization: `Bearer ${user.jwt}` },
     });
-    // Повертається масив, беремо перший об'єкт
     return uploadRes.data[0];
   };
 
-  // ----------------------------------
-  // 5) Видалити зображення (з форми)
-  // ----------------------------------
   const removeImage = () => {
     setFormValue((prev) => ({ ...prev, image: null }));
   };
 
-  // ----------------------------------
-  // 6) Збереження новини
-  // ----------------------------------
   const handleSubmit = async () => {
-    let uploadedImage = formValue.image; // поточне зображення (може бути null)
-
-    // Якщо користувач завантажив новий файл
+    let uploadedImage = formValue.image;
     if (imageFile) {
       try {
         uploadedImage = await handleImageUpload(imageFile);
@@ -152,47 +202,28 @@ const News = () => {
       }
     }
 
-    // Формуємо payload для Strapi
     const payload = {
       data: {
         ...formValue,
         content: htmlToBlocks(formValue.content),
-        image: uploadedImage?.id || null, // Якщо видалили, буде null
+        image: uploadedImage?.id || null,
       },
     };
 
     try {
-      // Якщо редагуємо існуючий запис із локалізацією
       if (editItem?.locale && editItem?.documentId) {
-        // Оновлення
-        try {
-          await API.put(
-            `/news-lists/${editItem.documentId}?locale=${editItem.locale}`,
-            payload,
-            { headers: { Authorization: `Bearer ${user.jwt}` } }
-          );
-          setSuccess("Новину оновлено успішно");
-        } catch (err) {
-          // Якщо не існує локалізації
-          if (err.response?.status === 404) {
-            await API.post(
-              `/news-lists/${editItem.documentId}/localizations?locale=${editItem.locale}`,
-              payload,
-              { headers: { Authorization: `Bearer ${user.jwt}` } }
-            );
-            setSuccess("Локалізацію створено успішно");
-          } else {
-            throw err;
-          }
-        }
+        await API.put(
+          `/news-lists/${editItem.documentId}?locale=${editItem.locale}`,
+          payload,
+          { headers: { Authorization: `Bearer ${user.jwt}` } }
+        );
+        setSuccess("Новину оновлено успішно");
       } else {
-        // Створення нової новини
         await API.post("/news-lists", payload, {
           headers: { Authorization: `Bearer ${user.jwt}` },
         });
         setSuccess("Новину створено успішно");
       }
-
       setModalOpen(false);
       fetchNews();
     } catch (err) {
@@ -201,9 +232,6 @@ const News = () => {
     }
   };
 
-  // ----------------------------------
-  // 7) Відображення контенту в таблиці
-  // ----------------------------------
   const getPreviewText = (content) => {
     if (Array.isArray(content) && content.length > 0) {
       return content
@@ -234,62 +262,76 @@ const News = () => {
         Додати новину
       </Button>
 
-      {/* ----------- TABLE ------------ */}
-      <Table autoHeight data={news} loading={loading} style={{ marginTop: 20 }}>
-        {/* 1) Колонка зображення */}
-        <Column width={80} align="center">
-          <HeaderCell>Зображення</HeaderCell>
-          <Cell>
-            {(rowData) =>
-              rowData.image ? (
-                <img
-                  src={`http://localhost:1337${rowData.image.url}`}
-                  alt="thumb"
-                  width="50"
-                />
-              ) : (
-                "—"
-              )
-            }
-          </Cell>
-        </Column>
-
-        {/* 2) Заголовок */}
-        <Column flexGrow={2}>
-          <HeaderCell>Заголовок</HeaderCell>
-          <Cell dataKey="title" />
-        </Column>
-
-        {/* 3) Контент (короткий прев'ю) */}
-        <Column flexGrow={3}>
-          <HeaderCell>Контент</HeaderCell>
-          <Cell>{(rowData) => getPreviewText(rowData.content)}</Cell>
-        </Column>
-
-        {/* 4) Опубліковано */}
-        <Column width={120} align="center">
-          <HeaderCell>Опубліковано</HeaderCell>
-          <Cell>{(rowData) => (rowData.published ? "Так" : "Ні")}</Cell>
-        </Column>
-
-        {/* 5) Дії */}
-        <Column width={100} align="center">
-          <HeaderCell>Дії</HeaderCell>
-          <Cell>
-            {(rowData) => (
-              <Button
-                size="xs"
-                appearance="link"
-                onClick={() => openModal(rowData)}
+      <DndProvider backend={HTML5Backend}>
+        <Table
+          autoHeight
+          data={news}
+          loading={loading}
+          rowKey="documentId"
+          style={{ marginTop: 20 }}
+          renderRow={(children, rowData) => {
+            if (!rowData) return children;
+            return (
+              <DraggableRow
+                key={rowData.documentId}
+                rowData={rowData}
+                onDrag={moveRow}
               >
-                Редагувати
-              </Button>
-            )}
-          </Cell>
-        </Column>
-      </Table>
+                {children}
+              </DraggableRow>
+            );
+          }}
+        >
+          <Column width={80} align="center">
+            <HeaderCell>Зображення</HeaderCell>
+            <Cell>
+              {(rowData) =>
+                rowData.image ? (
+                  <img
+                    className="table-thumbnail"
+                    src={`http://localhost:1337${rowData.image.url}`}
+                    alt="thumb"
+                    width="50"
+                  />
+                ) : (
+                  "—"
+                )
+              }
+            </Cell>
+          </Column>
 
-      {/* ----------- MODAL ------------ */}
+          <Column flexGrow={2}>
+            <HeaderCell>Заголовок</HeaderCell>
+            <Cell dataKey="title" />
+          </Column>
+
+          <Column flexGrow={3}>
+            <HeaderCell>Контент</HeaderCell>
+            <Cell>{(rowData) => getPreviewText(rowData.content)}</Cell>
+          </Column>
+
+          <Column width={120} align="center">
+            <HeaderCell>Опубліковано</HeaderCell>
+            <Cell>{(rowData) => (rowData.published ? "Так" : "Ні")}</Cell>
+          </Column>
+
+          <Column width={100} align="center">
+            <HeaderCell>Дії</HeaderCell>
+            <Cell>
+              {(rowData) => (
+                <Button
+                  size="xs"
+                  appearance="link"
+                  onClick={() => openModal(rowData)}
+                >
+                  Редагувати
+                </Button>
+              )}
+            </Cell>
+          </Column>
+        </Table>
+      </DndProvider>
+
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} size="md">
         <Modal.Header>
           <Modal.Title>
@@ -298,7 +340,6 @@ const News = () => {
         </Modal.Header>
         <Modal.Body>
           <Form fluid>
-            {/* Якщо вже є зображення, показуємо прев'ю + кнопка Видалити */}
             {formValue.image && (
               <div style={{ marginBottom: 15 }}>
                 <img
@@ -321,7 +362,6 @@ const News = () => {
               </div>
             )}
 
-            {/* Заголовок */}
             <Form.Group>
               <Form.ControlLabel>Заголовок</Form.ControlLabel>
               <Form.Control
@@ -333,7 +373,6 @@ const News = () => {
               />
             </Form.Group>
 
-            {/* Контент (ReactQuill, без тулбара) */}
             <Form.Group>
               <Form.ControlLabel>Контент</Form.ControlLabel>
               <ReactQuill
@@ -346,7 +385,6 @@ const News = () => {
               />
             </Form.Group>
 
-            {/* Завантаження нового зображення */}
             <Form.Group>
               <Form.ControlLabel>Зображення</Form.ControlLabel>
               <Uploader
@@ -355,7 +393,6 @@ const News = () => {
               />
             </Form.Group>
 
-            {/* Опубліковано */}
             <Form.Group>
               <Form.ControlLabel>Опубліковано</Form.ControlLabel>
               <Toggle

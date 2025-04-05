@@ -406,6 +406,7 @@ export interface ApiNewsListNewsList extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::news-list.news-list'
     >;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     published: Schema.Attribute.Boolean &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
