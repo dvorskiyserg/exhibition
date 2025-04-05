@@ -24,7 +24,11 @@
     background-color: #ffa800;
     z-index: 1;
   }
-/*   
-.rs-table-row {
-    height: 70px !important;
-  } */
+  
+.trash-icon {
+  margin-top: -7px;
+  }
+
+.table-thumbnail {
+  margin-top: -12px;
+}

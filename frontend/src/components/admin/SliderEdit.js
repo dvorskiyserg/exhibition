@@ -262,6 +262,7 @@ const SliderEdit = () => {
               {(rowData) =>
                 rowData.image ? (
                   <img
+                    className="table-thumbnail"
                     src={`http://localhost:1337${rowData.image.url}`}
                     alt=""
                     style={{ height: 40 }}
@@ -288,6 +289,7 @@ const SliderEdit = () => {
             <Cell>
               {(rowData) => (
                 <IconButton
+                  className="trash-icon"
                   icon={<Trash />}
                   color="red"
                   appearance="subtle"
