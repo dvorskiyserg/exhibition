@@ -1,6 +1,6 @@
 .main-slider {
     width: 100%;
-    height: 50vh; /* На весь екран */
+    height: 85vh !important;
     overflow: hidden;
     position: relative;
 }

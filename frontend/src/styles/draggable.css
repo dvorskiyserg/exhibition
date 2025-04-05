@@ -1,4 +1,4 @@
-.draggable-row {
+/* .draggable-row {
     padding: 10px;
     border-bottom: 1px solid #eee;
     background: #fff;
@@ -8,8 +8,9 @@
     position: relative;
     cursor: grab;
     transition: background 0.2s;
-  }
-  
+    height: 75px !important; 
+  } */
+   
   .draggable-row.dragging {
     opacity: 0.5;
   }
@@ -23,4 +24,7 @@
     background-color: #ffa800;
     z-index: 1;
   }
-  
+/*   
+.rs-table-row {
+    height: 70px !important;
+  } */

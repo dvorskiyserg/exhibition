@@ -24,22 +24,38 @@ const ItemTypes = { ROW: "row" };
 
 function DraggableRow({ children, rowData, onDrag }) {
   const ref = useRef(null);
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: ItemTypes.ROW,
-    item: { id: rowData.documentId },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  }));
+  const hasDroppedRef = useRef(false);
 
-  const [{ isOver, canDrop }, drop] = useDrop(() => ({
-    accept: ItemTypes.ROW,
-    drop: (item) => onDrag?.(item.id, rowData.documentId),
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-      canDrop: monitor.canDrop(),
+  const [{ isDragging }, drag] = useDrag(
+    () => ({
+      type: ItemTypes.ROW,
+      item: { id: rowData.documentId },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
     }),
-  }));
+    [rowData.documentId]
+  );
+
+  const [{ isOver, canDrop }, drop] = useDrop(
+    () => ({
+      accept: ItemTypes.ROW,
+      drop: (item) => {
+        if (!hasDroppedRef.current) {
+          onDrag?.(item.id, rowData.documentId);
+          hasDroppedRef.current = true;
+          setTimeout(() => {
+            hasDroppedRef.current = false;
+          }, 200);
+        }
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      }),
+    }),
+    [rowData.documentId]
+  );
 
   drag(drop(ref));
 
@@ -52,6 +68,8 @@ function DraggableRow({ children, rowData, onDrag }) {
     </div>
   );
 }
+
+// решта компоненту SliderEdit лишається без змін
 
 const SliderEdit = () => {
   const { user } = useAuth();
@@ -197,7 +215,7 @@ const SliderEdit = () => {
 
   const handleDelete = async (slide) => {
     try {
-      await API.delete(`/slider-items/${slide.id}`, {
+      await API.delete(`/slider-items/${slide.documentId}`, {
         headers: { Authorization: `Bearer ${user.jwt}` },
       });
       fetchSlides();
