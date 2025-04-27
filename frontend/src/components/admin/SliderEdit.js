@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Panel,
   Button,
@@ -9,67 +9,13 @@ import {
   Uploader,
   SelectPicker,
   Input,
-  Table,
+  List,
   IconButton,
 } from "rsuite";
 import { Trash } from "@rsuite/icons";
 import { useAuth } from "../../context/AuthContext";
 import API from "../../api/axiosInstance";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import "../../styles/draggable.css";
-
-const { Column, HeaderCell, Cell } = Table;
-const ItemTypes = { ROW: "row" };
-
-function DraggableRow({ children, rowData, onDrag }) {
-  const ref = useRef(null);
-  const hasDroppedRef = useRef(false);
-
-  const [{ isDragging }, drag] = useDrag(
-    () => ({
-      type: ItemTypes.ROW,
-      item: { id: rowData.documentId },
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-    }),
-    [rowData.documentId]
-  );
-
-  const [{ isOver, canDrop }, drop] = useDrop(
-    () => ({
-      accept: ItemTypes.ROW,
-      drop: (item) => {
-        if (!hasDroppedRef.current) {
-          onDrag?.(item.id, rowData.documentId);
-          hasDroppedRef.current = true;
-          setTimeout(() => {
-            hasDroppedRef.current = false;
-          }, 200);
-        }
-      },
-      collect: (monitor) => ({
-        isOver: monitor.isOver(),
-        canDrop: monitor.canDrop(),
-      }),
-    }),
-    [rowData.documentId]
-  );
-
-  drag(drop(ref));
-
-  const isActive = canDrop && isOver;
-
-  return (
-    <div ref={ref} className={`draggable-row${isDragging ? " dragging" : ""}`}>
-      {isActive && <div className="drop-indicator" />}
-      {children}
-    </div>
-  );
-}
-
-// решта компоненту SliderEdit лишається без змін
 
 const SliderEdit = () => {
   const { user } = useAuth();
@@ -125,14 +71,14 @@ const SliderEdit = () => {
     }
   };
 
-  const moveRow = (dragId, hoverId) => {
-    const dragIndex = slides.findIndex((i) => i.documentId === dragId);
-    const hoverIndex = slides.findIndex((i) => i.documentId === hoverId);
-    if (dragIndex === -1 || hoverIndex === -1) return;
-    const newData = [...slides];
-    const [dragRow] = newData.splice(dragIndex, 1);
-    newData.splice(hoverIndex, 0, dragRow);
-    updateOrder(newData);
+  const handleSortEnd = ({ oldIndex, newIndex }) => {
+    setSlides((prevSlides) => {
+      const movedItem = prevSlides.splice(oldIndex, 1);
+      const updatedSlides = [...prevSlides];
+      updatedSlides.splice(newIndex, 0, movedItem[0]);
+      updateOrder(updatedSlides);
+      return updatedSlides;
+    });
   };
 
   const openModal = (item = null) => {
@@ -237,84 +183,48 @@ const SliderEdit = () => {
         Додати слайд
       </Button>
 
-      <DndProvider backend={HTML5Backend}>
-        <Table
-          data={slides}
-          autoHeight
-          rowKey="documentId"
-          bordered
-          renderRow={(children, rowData) => {
-            if (!rowData) return children;
-            return (
-              <DraggableRow
-                key={rowData.documentId}
-                rowData={rowData}
-                onDrag={moveRow}
-              >
-                {children}
-              </DraggableRow>
-            );
-          }}
-        >
-          <Column width={120} align="center" fixed>
-            <HeaderCell>Зображення</HeaderCell>
-            <Cell>
-              {(rowData) =>
-                rowData.image ? (
+      <List sortable bordered onSort={handleSortEnd} style={{ marginTop: 20 }}>
+        {slides.map((slide, index) => (
+          <List.Item key={slide.documentId} index={index}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <div style={{ flex: "0 0 120px", textAlign: "center" }}>
+                {slide.image ? (
                   <img
                     className="table-thumbnail"
-                    src={`http://localhost:1337${rowData.image.url}`}
+                    src={`http://localhost:1337${slide.image.url}`}
                     alt=""
                     style={{ height: 40 }}
                   />
                 ) : (
                   "-"
-                )
-              }
-            </Cell>
-          </Column>
-
-          <Column flexGrow={1} align="left">
-            <HeaderCell>Заголовок</HeaderCell>
-            <Cell dataKey="title" />
-          </Column>
-
-          <Column width={150} align="center">
-            <HeaderCell>Опубліковано</HeaderCell>
-            <Cell>{(rowData) => (rowData.published ? "Так" : "Ні")}</Cell>
-          </Column>
-
-          <Column width={100} align="center">
-            <HeaderCell>Видалити</HeaderCell>
-            <Cell>
-              {(rowData) => (
+                )}
+              </div>
+              <div style={{ flex: 2 }}>{slide.title}</div>
+              <div style={{ flex: "0 0 150px", textAlign: "center" }}>
+                {slide.published ? "Так" : "Ні"}
+              </div>
+              <div style={{ flex: "0 0 100px", textAlign: "center" }}>
                 <IconButton
                   className="trash-icon"
                   icon={<Trash />}
                   color="red"
                   appearance="subtle"
-                  onClick={() => handleDelete(rowData)}
+                  onClick={() => handleDelete(slide)}
                 />
-              )}
-            </Cell>
-          </Column>
-
-          <Column width={100} align="center">
-            <HeaderCell>Дії</HeaderCell>
-            <Cell>
-              {(rowData) => (
+              </div>
+              <div style={{ flex: "0 0 100px", textAlign: "center" }}>
                 <Button
                   size="xs"
                   appearance="link"
-                  onClick={() => openModal(rowData)}
+                  onClick={() => openModal(slide)}
                 >
                   Редагувати
                 </Button>
-              )}
-            </Cell>
-          </Column>
-        </Table>
-      </DndProvider>
+              </div>
+            </div>
+          </List.Item>
+        ))}
+      </List>
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} size="md">
         <Modal.Header>

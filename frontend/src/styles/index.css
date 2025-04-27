@@ -283,7 +283,8 @@ body {
 
 .LoginLink {
   color: var(--primary-color) !important;
-  margin-top: 7px;
+  margin-top: 6px;
+  margin-bottom: 2px;
 }
 
 .mobile_open-close_icon {

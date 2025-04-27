@@ -27,7 +27,7 @@ const Header = () => {
       const userRole = user.role?.toLowerCase();
       return (
         <AdminIcon
-          style={{ fontSize: "18px", cursor: "pointer" }}
+          style={{ fontSize: "18px", cursor: "pointer", marginBottom: "2" }}
           onClick={() =>
             navigate(userRole === "admin" ? "/admin/dashboard" : "/profile")
           }
@@ -36,7 +36,7 @@ const Header = () => {
     } else {
       return (
         <Link className="LoginLink" to="/login">
-          <MdLogin size={22} style={{ cursor: "pointer" }} />
+          <MdLogin size={22} style={{ cursor: "pointer", marginBottom: "2" }} />
         </Link>
       );
     }
